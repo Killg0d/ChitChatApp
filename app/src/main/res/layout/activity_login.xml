@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="match_parent"
+    tools:context=".Login">
+
+    <!-- Top Navy Blue Section -->
+    <LinearLayout
+        android:id="@+id/navy_blue_block"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/rounded_bottom_corners"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="30dp"
+            android:fontFamily="@font/inika_bold"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="Login"
+            />
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:fontFamily="@font/inika"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="Welcome Back!!"
+            />
+
+    </LinearLayout>
+
+    <!-- White Rounded Section -->
+    <LinearLayout
+        android:id="@+id/rounded_white_block"
+        android:layout_width="match_parent"
+        android:layout_marginTop="-40dp"
+        android:layout_height="100dp"
+        android:background="@drawable/whitelogin"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+    </LinearLayout>
+
+    <!-- Login Fields Section -->
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:background="@drawable/loginfields"
+        android:orientation="vertical"
+        android:layout_marginTop="65dp"
+        android:layout_gravity="center"
+        tools:ignore="MissingConstraints">
+
+        <!-- Email Field -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inika"
+            android:hint="Enter your email id"
+            android:textColorHint="@color/white"
+            android:inputType="textEmailAddress"
+            android:id="@+id/email"
+            android:textColor="@color/white" />
+
+        <!-- Password Field -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:fontFamily="@font/inika"
+            android:hint="Enter your password"
+            android:textColorHint="@color/white"
+            android:inputType="textPassword"
+            android:id="@+id/password"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Forgot Password -->
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="140dp"
+        android:layout_marginRight="140dp"
+        android:fontFamily="@font/inika"
+        android:textColor="@color/navy_blue"
+        android:textSize="10dp"
+        android:text="Forgot Password?"
+        />
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/navy_blue"
+        android:text="Login"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/inika"
+        />
+
+    <!-- Don't Have Account? Register Button -->
+    <TextView
+        android:id="@+id/registerLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Don't have an account? Register"
+        android:textColor="@color/navy_blue"
+
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:textSize="14sp"
+        android:fontFamily="@font/inika"
+        android:paddingBottom="16dp" />
+
+</LinearLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="0dp">
+
+    <!-- Toolbar/Header with group name and search -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/navy_blue"
+        android:padding="0dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <!-- EditText for group name input -->
+            <EditText
+                android:id="@+id/editTextGroupName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Enter New Group Name"
+                android:padding="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <!-- Search Icon to search contact name -->
+            <ImageView
+                android:id="@+id/searchIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="@android:color/white" />
+        </LinearLayout>
+
+        <!-- Add members text below the input -->
+        <TextView
+            android:id="@+id/addMembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:text="Add members"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- RecyclerView for contact list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <!-- Floating Action Button for submission -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/white"
+        android:contentDescription="Submit Group" />
+</LinearLayout>

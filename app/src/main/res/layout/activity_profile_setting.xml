@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".ProfileSetting">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp">
+
+        <!-- Profile Image (Circle) -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:src="@drawable/download"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:outlineProvider="background"/>
+        <!-- Camera Icon (Overlay) -->
+        <ImageView
+            android:id="@+id/camera_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="4dp"
+            android:src="@drawable/baseline_camera_alt_24"
+            android:background="@drawable/camera_background"
+            android:padding="4dp" />
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/list1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

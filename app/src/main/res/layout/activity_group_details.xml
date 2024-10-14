@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header (Toolbar) -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/navy_blue">
+
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back_ios_new_24"
+                android:layout_marginLeft="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back Button" />
+
+            <TextView
+                android:id="@+id/group_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/inika"
+                android:textSize="20sp"
+                android:text="Group Name" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- Group Info Section -->
+        <ImageView
+            android:id="@+id/group_avatar"
+            android:layout_width="120dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Group Avatar"
+            android:padding="17dp"
+            android:src="@drawable/grp" />
+
+
+
+        <TextView
+            android:id="@+id/tv_members_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Members"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Description -->
+        <EditText
+            android:id="@+id/tv_group_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group Description"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:background="@android:color/white"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <!-- Members List -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp">
+
+            <!-- Member 1 with Profile Picture -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="Member 1 Profile"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:id="@+id/member1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Member 1"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <!-- Member 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="Member 2 Profile"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:id="@+id/member2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Member 2"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <!-- Member 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="Member 3 Profile"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:id="@+id/member3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Member 3"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <!-- Add more members as needed -->
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

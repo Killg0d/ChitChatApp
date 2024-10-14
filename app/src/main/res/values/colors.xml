@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy_blue">#070D46</color>
+    <color name="white">#ffff</color>
+    <color name="ligher_gray">@android:color/darker_gray</color>
+    <color name="black">#FF000000</color>
+    <color name="my_light_primary">#070D46</color>
+    <color name="transparent">#00000000</color>
+    <color name="my_light_secondary">#FCFCFC</color>
+</resources>

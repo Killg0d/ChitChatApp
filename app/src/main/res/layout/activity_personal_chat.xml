@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:theme="@style/Base.Theme.Project"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".personal_chat">
+
+<androidx.appcompat.widget.Toolbar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/toolbar"
+    android:layout_gravity="center"
+    android:background="@color/navy_blue"
+    >
+    <ImageButton
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/back_button"
+        android:src="@drawable/baseline_arrow_back_ios_new_24"
+        android:layout_marginLeft="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back Button"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/clicktoname"
+        >
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/baseline_person_24"
+        android:scaleType="centerCrop"
+        android:contentDescription="Profile Picture"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"
+        android:fontFamily="@font/inika"
+        android:textSize="20dp"
+        android:text="John"/>
+    </LinearLayout>
+</androidx.appcompat.widget.Toolbar>
+    <LinearLayout
+        android:id="@+id/message_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="620dp"
+        android:background="@android:color/white"
+        android:padding="8dp">
+
+        <!-- Emoji Button -->
+        <ImageButton
+            android:id="@+id/emoji_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_emoji"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Emoji Icon" />
+
+        <!-- EditText for typing the message -->
+        <EditText
+            android:id="@+id/message_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Type a message"
+            android:padding="10dp"
+            android:background="@android:color/white"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="text" />
+
+        <!-- Send Button (Optional) -->
+        <ImageButton
+            android:id="@+id/send_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_send"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Send Button" />
+    </LinearLayout>
+</LinearLayout>

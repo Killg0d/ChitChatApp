@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="24dp">
+
+    <!-- Title Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="32sp"
+        android:textColor="@color/navy_blue"
+        android:fontFamily="@font/inika_bold"
+        android:paddingBottom="16dp"
+        android:layout_gravity="center" />
+
+    <!-- Sub-title or Prompt -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create a new account"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:paddingBottom="24dp" />
+
+    <!-- Full Name Input -->
+    <EditText
+        android:id="@+id/fullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Full Name"
+        android:padding="16dp"
+        android:fontFamily="@font/inika_bold"
+        android:textColorHint="@color/navy_blue"
+        android:background="@drawable/input_field_background"
+        android:inputType="textPersonName"
+        android:textColor="@color/navy_blue"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Email Address Input -->
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Email Address"
+        android:padding="16dp"
+        android:fontFamily="@font/inika_bold"
+        android:textColorHint="@color/navy_blue"
+        android:background="@drawable/input_field_background"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/navy_blue"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Password Input -->
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Password"
+        android:padding="16dp"
+        android:fontFamily="@font/inika_bold"
+        android:textColorHint="@color/navy_blue"
+        android:background="@drawable/input_field_background"
+        android:inputType="textPassword"
+        android:textColor="@color/navy_blue"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Confirm Password Input -->
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        android:padding="16dp"
+        android:fontFamily="@font/inika_bold"
+        android:textColorHint="@color/navy_blue"
+        android:background="@drawable/input_field_background"
+        android:inputType="textPassword"
+        android:textColor="@color/navy_blue"
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/navy_blue"
+        android:padding="16dp"
+        android:fontFamily="@font/inika_bold"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Already have an account? Text -->
+    <TextView
+        android:id="@+id/alreadyHaveAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already have an account? Log in"
+        android:textSize="14sp"
+        android:textColor="@color/navy_blue"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inika" />
+
+</LinearLayout>
