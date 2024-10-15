@@ -110,6 +110,7 @@
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
+        android:background="@drawable/loginfields"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/navy_blue"
