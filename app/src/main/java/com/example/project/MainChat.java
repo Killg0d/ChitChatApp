@@ -11,6 +11,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class MainChat extends AppCompatActivity {
 LinearLayout chat1;
@@ -58,6 +61,7 @@ LinearLayout chat1;
         } else if (id==R.id.signout) {
             SharedPreferences p =getSharedPreferences("Login",MODE_PRIVATE);
             p.edit().putBoolean("isLogin?",false).apply();
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainChat.this, Login.class));
         }
         return super.onOptionsItemSelected(item);
