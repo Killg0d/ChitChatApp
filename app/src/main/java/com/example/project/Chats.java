@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
-import com.example.project.FontSizeManager;
 
 import androidx.appcompat.app.ActionBar;
 
 
-public class ChatsSetting extends BaseSettingActivity {
+public class Chats extends BaseActivity {
     RadioGroup theme,font;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

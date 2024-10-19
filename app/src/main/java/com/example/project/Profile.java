@@ -7,7 +7,7 @@ import androidx.appcompat.app.ActionBar;
 
 import java.util.ArrayList;
 
-public class ProfileSetting extends BaseSettingActivity {
+public class Profile extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

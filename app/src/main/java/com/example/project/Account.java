@@ -1,7 +1,6 @@
 package com.example.project;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
-public class AccountSetting extends BaseSettingActivity {
+public class Account extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class AccountSetting extends BaseSettingActivity {
             SettingOption item = (SettingOption) optionView.getItemAtPosition(i);
             if(item.getName().equals("Email Address"))
             {
-                Dialog dialog = new Dialog(AccountSetting.this);
+                Dialog dialog = new Dialog(Account.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -62,7 +61,7 @@ public class AccountSetting extends BaseSettingActivity {
             }
             else if(item.getName().equals("Change Password"))
             {
-                Dialog dialog = new Dialog(AccountSetting.this);
+                Dialog dialog = new Dialog(Account.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -94,8 +93,8 @@ public class AccountSetting extends BaseSettingActivity {
             }
             else if(item.getName().equals("Delete Account"))
             {
-                Toast.makeText(AccountSetting.this, "Working", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(AccountSetting.this);
+                Toast.makeText(Account.this, "Working", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(Account.this);
                 builder.setTitle("Delete Account");
                 builder.setMessage("Are you sure you want to delete the account?");
                 builder.setPositiveButton("Yes", (dialogInterface, i1) -> {
