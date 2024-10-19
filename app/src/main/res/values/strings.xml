@@ -17,4 +17,12 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="close">Close</string>
+    <string name="enter_new_text">Enter new text</string>
+    <string name="new_text">New text:</string>
+    <string name="enter_old_text">Enter old text</string>
+    <string name="old_text">Old text:</string>
+    <string name="confirm">Confirm</string>
+    <string name="old_password">Old Password:</string>
+    <string name="new_password">New Password:</string>
 </resources>
