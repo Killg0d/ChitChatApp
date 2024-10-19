@@ -7,4 +7,6 @@
     <color name="my_light_primary">#070D46</color>
     <color name="transparent">#00000000</color>
     <color name="my_light_secondary">#FCFCFC</color>
+    <color name="grey">#969696</color>
+    <color name="my_light_blue">#FD8EA5D3</color>
 </resources>

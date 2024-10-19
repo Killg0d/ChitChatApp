@@ -56,13 +56,101 @@
         android:text="John"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
-    <LinearLayout
-        android:id="@+id/messages"
+    <ScrollView
+        android:id="@+id/messages_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        />
+        android:fillViewport="true"> <!-- Ensures the ScrollView fills the available space -->
+
+        <LinearLayout
+            android:id="@+id/messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="bottom">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:layout_margin="10dp"
+                android:text="This is the last message\nIs this multiline"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/MessageTextViewStyle"
+                android:textAlignment="textStart"
+                android:layout_margin="10dp"
+                android:text="How will this appear" />
+        </LinearLayout>
+    </ScrollView>
     <LinearLayout
         android:id="@+id/message_input_layout"
         android:layout_width="match_parent"
@@ -70,7 +158,7 @@
         android:orientation="horizontal"
         android:layout_gravity="bottom"
         android:layout_weight="0"
-        android:background="@android:color/white"
+        android:background="@color/my_light_blue"
         android:padding="8dp">
 
         <!-- Emoji Button -->
