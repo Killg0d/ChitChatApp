@@ -63,6 +63,12 @@ public class MainChat extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.newgrp) {
