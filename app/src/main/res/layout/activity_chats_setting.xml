@@ -87,18 +87,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="small"
+                android:tag="exclude_font_change"
                 android:checked="true"/>
             <RadioButton
                 android:id="@+id/medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
+                android:tag="exclude_font_change"
                 android:text="medium"/>
             <RadioButton
                 android:id="@+id/large"
                 android:textSize="18dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="exclude_font_change"
                 android:text="large"/>
             </RadioGroup>
         </LinearLayout>
