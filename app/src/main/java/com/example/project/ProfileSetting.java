@@ -7,7 +7,7 @@ import androidx.appcompat.app.ActionBar;
 
 import java.util.ArrayList;
 
-public class Profile extends BaseActivity {
+public class ProfileSetting extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,7 +15,7 @@ public class Profile extends BaseActivity {
         setContentView(R.layout.activity_profile_setting);
         getIntent();
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Profile");
+        actionBar.setTitle("ProfileSetting");
         actionBar.setDisplayHomeAsUpEnabled(true);
         ArrayList<MessageList> mitem = new ArrayList<>();
         mitem.add(new MessageList("Name","Full Name",R.drawable.person));

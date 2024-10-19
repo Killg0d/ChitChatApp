@@ -75,7 +75,7 @@ public class MainChat extends AppCompatActivity {
             startActivity(new Intent(MainChat.this, GroupActivity.class));
             return true;
         } else if (id == R.id.settings) {
-            Intent i = new Intent(MainChat.this, Activity.class);
+            Intent i = new Intent(MainChat.this, ActivitySettings.class);
             startActivity(i);
             return true;
         } else if (id == R.id.signout) {

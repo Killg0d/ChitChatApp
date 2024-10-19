@@ -41,22 +41,22 @@
             android:exported="false"
             android:theme="@style/Theme.Design.NoActionBar" />
         <activity
-            android:name=".Chats"
+            android:name=".ChatsSettings"
             android:exported="false" />
         <activity
-            android:name=".Notification"
+            android:name=".NotificationSettings"
             android:exported="false" />
         <activity
             android:name=".BaseActivity"
             android:exported="false" />
         <activity
-            android:name=".Account"
+            android:name=".AccountSettings"
             android:exported="false" />
         <activity
-            android:name=".Profile"
+            android:name=".ProfileSetting"
             android:exported="false" />
         <activity
-            android:name=".Activity"
+            android:name=".ActivitySettings"
             android:exported="false" />
         <activity
             android:name=".GroupChatActivity"

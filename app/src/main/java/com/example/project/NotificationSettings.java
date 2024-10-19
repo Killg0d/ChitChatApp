@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 
-public class Notification extends BaseActivity {
+public class NotificationSettings extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,7 +8,7 @@ import android.widget.RadioGroup;
 import androidx.appcompat.app.ActionBar;
 
 
-public class Chats extends BaseActivity {
+public class ChatsSettings extends BaseActivity {
     RadioGroup theme,font;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,4 +25,6 @@
     <string name="confirm">Confirm</string>
     <string name="old_password">Old Password:</string>
     <string name="new_password">New Password:</string>
+    <string name="old_email">Old Email:</string>
+    <string name="new_email">New Email:</string>
 </resources>

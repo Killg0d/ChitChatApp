@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
-public class Account extends BaseActivity {
+public class AccountSettings extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class Account extends BaseActivity {
             SettingOption item = (SettingOption) optionView.getItemAtPosition(i);
             if(item.getName().equals("Email Address"))
             {
-                Dialog dialog = new Dialog(Account.this);
+                Dialog dialog = new Dialog(AccountSettings.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -49,8 +49,13 @@ public class Account extends BaseActivity {
 
                     dialog.dismiss();  // Close the dialog
                 });
-                String oldEmail = oldEmailInput.getText().toString();
-                String newEmail = newEmailInput.getText().toString();
+                TextView oldText = dialog.findViewById(R.id.textview_1);
+                TextView newText = dialog.findViewById(R.id.textview2);
+
+                oldText.setText(R.string.old_email);
+                newText.setText(R.string.new_email);
+                oldEmailInput.setHint("Enter old email");
+                newEmailInput.setHint("Enter new email");
                 // Confirm button Listner
                 confirm.setOnClickListener(view1 -> {
                     dialog.dismiss();
@@ -61,7 +66,7 @@ public class Account extends BaseActivity {
             }
             else if(item.getName().equals("Change Password"))
             {
-                Dialog dialog = new Dialog(Account.this);
+                Dialog dialog = new Dialog(AccountSettings.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -93,8 +98,8 @@ public class Account extends BaseActivity {
             }
             else if(item.getName().equals("Delete Account"))
             {
-                Toast.makeText(Account.this, "Working", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(Account.this);
+                Toast.makeText(AccountSettings.this, "Working", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AccountSettings.this);
                 builder.setTitle("Delete Account");
                 builder.setMessage("Are you sure you want to delete the account?");
                 builder.setPositiveButton("Yes", (dialogInterface, i1) -> {
