@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:contentDescription="Close"
+            android:contentDescription="@string/close"
             android:src="@android:drawable/ic_menu_close_clear_cancel" />
     </RelativeLayout>
     <LinearLayout
@@ -28,7 +28,7 @@
         android:id="@+id/textview_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Old email:"
+        android:text="@string/old_text"
         android:textSize="16sp" />
 
     <EditText
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Enter old email"
+        android:hint="@string/enter_old_text"
         android:inputType="textEmailAddress" />
     </LinearLayout>
     <LinearLayout
@@ -48,21 +48,22 @@
             android:id="@+id/textview2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New email:"
+            android:text="@string/new_text"
             android:textSize="16sp" />
 
         <EditText
             android:id="@+id/new_input"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter new email"
+            android:hint="@string/enter_new_text"
             android:inputType="textEmailAddress" />
     </LinearLayout>
 
     <Button
+        android:id="@+id/confirm_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="Confirm" />
+        android:text="@string/confirm" />
 
 </LinearLayout>
