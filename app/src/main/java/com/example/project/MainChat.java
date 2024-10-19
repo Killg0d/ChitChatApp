@@ -2,17 +2,15 @@ package com.example.project;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
 
 public class MainChat extends AppCompatActivity {
 LinearLayout chat1;
@@ -39,6 +37,12 @@ LinearLayout chat1;
     }
 
     @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id=item.getItemId();
         if(id==R.id.newgrp)
@@ -53,7 +57,7 @@ LinearLayout chat1;
             return true;
         } else if (id==R.id.signout) {
             SharedPreferences p =getSharedPreferences("Login",MODE_PRIVATE);
-            p.edit().putBoolean("isLogin?",false).commit();
+            p.edit().putBoolean("isLogin?",false).apply();
             startActivity(new Intent(MainChat.this, Login.class));
         }
         return super.onOptionsItemSelected(item);
