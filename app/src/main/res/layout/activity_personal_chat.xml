@@ -13,10 +13,10 @@
 
 <androidx.appcompat.widget.Toolbar
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/toolbar"
-    android:layout_gravity="center"
-    android:background="@color/navy_blue"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/my_light_primary"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    android:theme="@style/AppTheme.Toolbar"
     >
     <ImageButton
 
@@ -57,12 +57,19 @@
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
     <LinearLayout
+        android:id="@+id/messages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        />
+    <LinearLayout
         android:id="@+id/message_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
-        android:layout_marginTop="620dp"
+        android:layout_weight="0"
         android:background="@android:color/white"
         android:padding="8dp">
 
