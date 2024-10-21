@@ -3,6 +3,7 @@ package com.example.project;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,14 @@ public class MainChat extends AppCompatActivity {
 
             startActivity(intent);
         });
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            // User is still logged in
+            Log.d("FirebaseAuth", "User is authenticated: " + currentUser.getUid());
+        } else {
+            // User is not logged in
+            Log.d("FirebaseAuth", "User is not authenticated");
+        }
     }
 
     @Override
@@ -91,6 +102,7 @@ public class MainChat extends AppCompatActivity {
         } else if (id == R.id.signout) {
             SharedPreferences p = getSharedPreferences("Login", MODE_PRIVATE);
             p.edit().putBoolean("isLogin?", false).commit();
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainChat.this, Login.class));
             finish();  // To prevent going back to this activity after sign-out
         }

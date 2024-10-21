@@ -40,10 +40,14 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:latest_version")
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
+
 }
