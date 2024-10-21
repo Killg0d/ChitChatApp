@@ -13,7 +13,7 @@ import androidx.appcompat.app.ActionBar;
 
 import java.util.ArrayList;
 
-public class SettingActivity extends BaseSettingActivity {
+public class ActivitySettings extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class SettingActivity extends BaseSettingActivity {
                 MessageList item = (MessageList) listView.getItemAtPosition(i);
                 if(!item.equals(null))
                 {
-                    startActivity(new Intent(SettingActivity.this,ProfileSetting.class));
+                    startActivity(new Intent(ActivitySettings.this, ProfileSetting.class));
                 }
             }
         });
@@ -52,18 +52,18 @@ public class SettingActivity extends BaseSettingActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SettingOption item =(SettingOption) optionView.getItemAtPosition(i);
-                Toast.makeText(SettingActivity.this, item.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySettings.this, item.getName(), Toast.LENGTH_SHORT).show();
                 if(item.getName().equals("Accounts"))
                 {
-                    startActivity(new Intent(SettingActivity.this,AccountSetting.class));
+                    startActivity(new Intent(ActivitySettings.this, AccountSettings.class));
                 }
                 if(item.getName().equals("Notification"))
                 {
-                    startActivity(new Intent(SettingActivity.this,NotificationSetting.class));
+                    startActivity(new Intent(ActivitySettings.this, NotificationSettings.class));
                 }
                 if(item.getName().equals("Chats"))
                 {
-                    startActivity(new Intent(SettingActivity.this,ChatsSetting.class));
+                    startActivity(new Intent(ActivitySettings.this, ChatsSettings.class));
                 }
             }
         }

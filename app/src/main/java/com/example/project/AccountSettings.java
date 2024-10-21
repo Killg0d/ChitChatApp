@@ -1,7 +1,6 @@
 package com.example.project;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
-public class AccountSetting extends BaseSettingActivity {
+public class AccountSettings extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class AccountSetting extends BaseSettingActivity {
             SettingOption item = (SettingOption) optionView.getItemAtPosition(i);
             if(item.getName().equals("Email Address"))
             {
-                Dialog dialog = new Dialog(AccountSetting.this);
+                Dialog dialog = new Dialog(AccountSettings.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -50,8 +49,13 @@ public class AccountSetting extends BaseSettingActivity {
 
                     dialog.dismiss();  // Close the dialog
                 });
-                String oldEmail = oldEmailInput.getText().toString();
-                String newEmail = newEmailInput.getText().toString();
+                TextView oldText = dialog.findViewById(R.id.textview_1);
+                TextView newText = dialog.findViewById(R.id.textview2);
+
+                oldText.setText(R.string.old_email);
+                newText.setText(R.string.new_email);
+                oldEmailInput.setHint("Enter old email");
+                newEmailInput.setHint("Enter new email");
                 // Confirm button Listner
                 confirm.setOnClickListener(view1 -> {
                     dialog.dismiss();
@@ -62,7 +66,7 @@ public class AccountSetting extends BaseSettingActivity {
             }
             else if(item.getName().equals("Change Password"))
             {
-                Dialog dialog = new Dialog(AccountSetting.this);
+                Dialog dialog = new Dialog(AccountSettings.this);
                 dialog.setContentView(R.layout.custom_edit_box);
 
                 // Find the close button and input fields
@@ -94,8 +98,8 @@ public class AccountSetting extends BaseSettingActivity {
             }
             else if(item.getName().equals("Delete Account"))
             {
-                Toast.makeText(AccountSetting.this, "Working", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(AccountSetting.this);
+                Toast.makeText(AccountSettings.this, "Working", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AccountSettings.this);
                 builder.setTitle("Delete Account");
                 builder.setMessage("Are you sure you want to delete the account?");
                 builder.setPositiveButton("Yes", (dialogInterface, i1) -> {

@@ -51,8 +51,8 @@ public class MainChat extends AppCompatActivity {
             Intent intent = new Intent(MainChat.this, personal_chat.class);
 
             // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
-            intent.putExtra("chatName", messageList.get(position).getChatName());
-            intent.putExtra("lastMessage", messageList.get(position).getLastMessage());
+            intent.putExtra("chatName", messageList.get(position).getName());
+            intent.putExtra("lastMessage", messageList.get(position).getMessage());
             intent.putExtra("profileImage", messageList.get(position).getProfilePictureResId());
 
             startActivity(intent);
@@ -72,13 +72,19 @@ public class MainChat extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.newgrp) {
             startActivity(new Intent(MainChat.this, GroupActivity.class));
             return true;
         } else if (id == R.id.settings) {
-            Intent i = new Intent(MainChat.this, SettingActivity.class);
+            Intent i = new Intent(MainChat.this, ActivitySettings.class);
             startActivity(i);
             return true;
         } else if (id == R.id.signout) {

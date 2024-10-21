@@ -104,7 +104,7 @@ public class register_page extends AppCompatActivity {
                             user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(tassk -> {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(register_page.this, "Profile updated with display name", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(register_page.this, "ProfileSetting updated with display name", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                         }

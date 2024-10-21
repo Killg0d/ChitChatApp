@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:padding="12dp">
 
-    <!-- Profile Image -->
+    <!-- ProfileSetting Image -->
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="50dp"

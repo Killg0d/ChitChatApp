@@ -80,7 +80,7 @@
             android:divider="@android:color/darker_gray"
             android:dividerHeight="1dp">
 
-            <!-- Member 1 with Profile Picture -->
+            <!-- Member 1 with ProfileSetting Picture -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
