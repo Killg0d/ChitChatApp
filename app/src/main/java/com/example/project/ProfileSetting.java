@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -28,13 +31,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ProfileSetting extends BaseActivity {
-    private static final String DEFAULT_IMAGE_URI = "drawable/download"; // Replace with your default image resource
-    private static final String USER_IMAGES_PATH = "images/";
+
     FrameLayout frameLayout;
     ImageView profileImg;
-    Uri imageUri;
-    FirebaseStorage firebaseStorage;
-    StorageReference storageReference;
+
     private FirebaseAuth auth;
 
     @Override
@@ -71,38 +71,11 @@ public class ProfileSetting extends BaseActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profileImg);
         } else {
-            loadProfileImage(FirebaseAuth.getInstance().getCurrentUser());
+            loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profileImg);
         }
 
     }
 
-    private void loadProfileImage(FirebaseUser currentUser) {
-        if (currentUser != null) {
-            // Get the image reference from Firebase Storage
-            StorageReference userImageRef = storageReference.child(USER_IMAGES_PATH + currentUser.getUid() + ".jpg"); // Assuming you're saving images with UID
-
-            // Check if the image exists
-            userImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                // If it exists, set the profile image
-                Glide.with(this)
-                        .load(uri)
-                        .placeholder(R.drawable.download) // Optional placeholder
-                        .error(R.drawable.download)// Optional error image
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(profileImg);
-                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("profileImageUrl", uri.toString()); // Store the URL
-                editor.apply();
-            }).addOnFailureListener(e -> {
-                // If it doesn't exist, set the default image
-                profileImg.setImageResource(R.drawable.download); // Replace with actual drawable resource
-            });
-        } else {
-            // No user is logged in, show the default image
-            profileImg.setImageResource(R.drawable.download); // Replace with actual drawable resource
-        }
-    }
 
     private void chooseImage() {
         Intent intent = new Intent();
@@ -122,6 +95,10 @@ public class ProfileSetting extends BaseActivity {
     }
 
     private void uploadPicture() {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Uploading Image...");
+        dialog.show();
+
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
@@ -131,14 +108,41 @@ public class ProfileSetting extends BaseActivity {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     Toast.makeText(ProfileSetting.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(ProfileSetting.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                    // Get the download URL
+                    userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUri) {
+                            // Store the URL in SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("profileImageUrl", downloadUri.toString()); // Store the URL
+                            editor.apply();
+
+                            Toast.makeText(ProfileSetting.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfileSetting.this, "Failed to get download URL", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = ((double) (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount());
+                    dialog.setMessage("Percentage: " + (int) progressPercent + "%");
                 }
             });
         }
     }
+
 
 }
