@@ -68,89 +68,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="bottom">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:layout_margin="10dp"
-                android:text="This is the last message\nIs this multiline"
-                android:textAlignment="textEnd"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/MessageTextViewStyle"
-                android:textAlignment="textStart"
-                android:layout_margin="10dp"
-                android:text="How will this appear" />
+            android:gravity="bottom"> <!-- Ensure messages appear from the bottom -->
         </LinearLayout>
     </ScrollView>
+
     <LinearLayout
         android:id="@+id/message_input_layout"
         android:layout_width="match_parent"

@@ -55,6 +55,7 @@ public class MainChat extends AppCompatActivity {
             intent.putExtra("lastMessage", messageList.get(position).getMessage());
             intent.putExtra("profileImage", messageList.get(position).getProfilePictureResId());
 
+
             startActivity(intent);
         });
     }
