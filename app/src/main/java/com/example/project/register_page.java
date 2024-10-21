@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class register_page extends AppCompatActivity {
 
@@ -21,14 +22,16 @@ public class register_page extends AppCompatActivity {
     Button register;
 
     private FirebaseAuth mAuth; // Firebase Authentication instance
+    private FirebaseFirestore db; // Firestore instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_page);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         alreadyHaveAccount = findViewById(R.id.alreadyHaveAccount);
         fullname = findViewById(R.id.fullName);
@@ -106,6 +109,9 @@ public class register_page extends AppCompatActivity {
                                     });
                         }
 
+                        // Store user data in Firestore
+                        storeUserDataInFirestore(user.getUid(), fullnamee, emaill);
+
                         Toast.makeText(register_page.this, "Registration successful", Toast.LENGTH_SHORT).show();
 
                         // Navigate to HomeActivity after successful registration
@@ -119,6 +125,22 @@ public class register_page extends AppCompatActivity {
                             Toast.makeText(register_page.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
+                });
+    }
+
+    // Method to store user data in Firestore
+    private void storeUserDataInFirestore(String userId, String fullname, String email) {
+        // Create a new user with name and email
+        User user = new User(fullname, email);
+
+        // Add a new document with a generated ID
+        db.collection("users").document(userId)
+                .set(user)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(register_page.this, "User data stored in Firestore", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(register_page.this, "Error storing user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }

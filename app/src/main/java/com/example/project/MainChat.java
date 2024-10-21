@@ -10,6 +10,8 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,13 @@ public class MainChat extends AppCompatActivity {
 
         // Initialize the ListView for displaying chat messages
         chatListView = findViewById(R.id.chatListView);
+        FloatingActionButton fabNewChat = findViewById(R.id.fab_new_chat);
+        fabNewChat.setOnClickListener(v -> {
+            // Handle FAB click, for example, start a new activity to create a chat
+            Intent intent = new Intent(MainChat.this, SelectContactActivity.class);
+            startActivity(intent);
+        });
+
 
         // Create sample chat data (replace this with actual data from the server or database)
         messageList = new ArrayList<>();
