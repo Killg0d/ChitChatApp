@@ -1,6 +1,7 @@
 package com.example.project;
 
 public class User {
+    private String userId;
     private String fullName;
     private String email;
     private String description;
@@ -14,7 +15,8 @@ public class User {
         this.email = email;
 
     }
-    public User(String fullName, String email,String description,String profileurl) {
+    public User(String userId, String fullName, String email,String description,String profileurl) {
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.description=description;
@@ -34,4 +36,8 @@ public class User {
         return description;
     }
     public String getProfileurl(){return profileurl;}
+
+    public String getUserId() {
+        return userId;
+    }
 }

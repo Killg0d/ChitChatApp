@@ -11,8 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,28 +37,60 @@ public class personal_chat extends AppCompatActivity {
     private String chatId;                // Unique chat ID for each conversation
     private String senderEmail = "t1@gmail.com"; // Replace with actual sender email
     private String receiverEmail = "gg@gmail.com"; // Replace with actual receiver email
-
+    String chatName;
+    String profileImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_chat);
 
-        db = FirebaseFirestore.getInstance();
+
 
         // Retrieve the passed data from MainChat activity
-        String chatName = getIntent().getStringExtra("chatName");
-        int profileImage = getIntent().getIntExtra("profileImage", R.drawable.person);
+        chatName = getIntent().getStringExtra("chatName");
+        profileImage = getIntent().getStringExtra("profileImage");
+        String receiverId = getIntent().getStringExtra("receiverId");
+        FirebaseFirestore.getInstance().collection("users").document(receiverId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            chatName = documentSnapshot.getString("fullName");
+                            profileImage = documentSnapshot.getString("profileImageUrl");
 
-        // Generate a unique chat ID for this conversation
-        chatId = (senderEmail.compareTo(receiverEmail) < 0)
-                ? senderEmail + "_" + receiverEmail
-                : receiverEmail + "_" + senderEmail;
+                            // Use the retrieved fullName and profileImageUrl as needed
+                            // ...
+                        } else {
+                            // Handle the case where the document doesn't exist
+                            // ...
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle any errors that occurred during the dataretrieval
+                        // ...
+                    }
+                });
+
+
 
         // Initialize the views
         chatNameTextView = findViewById(R.id.chat_name);
         profileImageView = findViewById(R.id.profile_image);
         chatNameTextView.setText(chatName);
-        profileImageView.setImageResource(profileImage);
+        if (profileImage != null) {
+            Glide.with(this)
+                    .load(profileImage)
+                    .placeholder(R.drawable.person) // Placeholder while loading
+                    .error(R.drawable.person) // Error image if loading fails
+                    .into(profileImageView);
+        }
+        else
+        {
+            profileImageView.setImageResource(R.drawable.person);
+        }
         sendbutton = findViewById(R.id.send_button);
         messageInputLayout = findViewById(R.id.message_input_layout);
         messageInput = findViewById(R.id.message_input);
@@ -67,7 +105,7 @@ public class personal_chat extends AppCompatActivity {
         });
 
         // Load the previous messages for this conversation
-        loadMessages(chatId); // Load messages using the unique chat ID
+//        loadMessages(chatId); // Load messages using the unique chat ID
 
         // Send button click listener
         sendbutton.setOnClickListener(v -> {
