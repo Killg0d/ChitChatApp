@@ -4,6 +4,7 @@ public class User {
     private String fullName;
     private String email;
     private String description;
+    private String profileurl;
 
     // Empty constructor required for Firestore serialization
     public User() {}
@@ -11,11 +12,13 @@ public class User {
     public User(String fullName, String email) {
         this.fullName = fullName;
         this.email = email;
+
     }
-    public User(String fullName, String email,String description) {
+    public User(String fullName, String email,String description,String profileurl) {
         this.fullName = fullName;
         this.email = email;
         this.description=description;
+        this.profileurl=profileurl;
     }
 
     // Getters
@@ -30,4 +33,5 @@ public class User {
     public  String getDescription(){
         return description;
     }
+    public String getProfileurl(){return profileurl;}
 }
