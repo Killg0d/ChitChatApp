@@ -63,7 +63,8 @@ public class SelectContactActivity extends BaseActivity {
                 List<String> participants = new ArrayList<>();
                 participants.add(uid);
                 participants.add(u.getUserId());
-                new ChatManager().createChat(false, participants, null);
+                String chatId= new ChatManager().createChat(false, participants, null);
+                intent.putExtra("chatId", chatId);
                 startActivity(intent);
                 finish();
             }

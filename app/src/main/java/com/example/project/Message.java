@@ -2,18 +2,16 @@ package com.example.project;
 
 public class Message {
     private String senderId;
-    private String recipientId;
     private String message;
-    private long timestamp;
+    private long sentAt;
 
     // Required empty constructor for Firestore serialization
     public Message() {}
 
-    public Message(String senderId, String recipientId, String message, long timestamp) {
+    public Message(String senderId, String message, long timestamp) {
         this.senderId = senderId;
-        this.recipientId = recipientId;
         this.message = message;
-        this.timestamp = timestamp;
+        this.sentAt = timestamp;
     }
 
     // Getters
@@ -21,15 +19,12 @@ public class Message {
         return senderId;
     }
 
-    public String getRecipientId() {
-        return recipientId;
-    }
 
     public String getMessage() {
         return message;
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return sentAt;
     }
 }

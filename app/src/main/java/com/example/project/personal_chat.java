@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class personal_chat extends AppCompatActivity {
+    FirebaseFirestore firestore;
     private LinearLayout msgbox;
     private LinearLayout clicktoname;
     private TextView chatNameTextView;
@@ -35,8 +36,7 @@ public class personal_chat extends AppCompatActivity {
     private String msgtext;
     private EditText messageInput;
     private String chatId;                // Unique chat ID for each conversation
-    private String senderEmail = "t1@gmail.com"; // Replace with actual sender email
-    private String receiverEmail = "gg@gmail.com"; // Replace with actual receiver email
+    String receiverId;
     String chatName;
     String profileImage;
     @Override
@@ -44,12 +44,12 @@ public class personal_chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_chat);
 
-
-
+        firestore= FirebaseFirestore.getInstance();
+        chatId = getIntent().getStringExtra("chatId"); // Get the chat ID from the intent
         // Retrieve the passed data from MainChat activity
         chatName = getIntent().getStringExtra("chatName");
         profileImage = getIntent().getStringExtra("profileImage");
-        String receiverId = getIntent().getStringExtra("receiverId");
+        receiverId = getIntent().getStringExtra("receiverId");
         FirebaseFirestore.getInstance().collection("users").document(receiverId).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -103,7 +103,7 @@ public class personal_chat extends AppCompatActivity {
             Intent intent = new Intent(this, Chat_partner_profile.class);
             startActivity(intent);
         });
-
+        fetchMessages(chatId,receiverId);
         // Load the previous messages for this conversation
 //        loadMessages(chatId); // Load messages using the unique chat ID
 
@@ -111,8 +111,9 @@ public class personal_chat extends AppCompatActivity {
         sendbutton.setOnClickListener(v -> {
             msgtext = messageInput.getText().toString();
             if (!msgtext.isEmpty()) {
+                new ChatManager().sendMessage(chatId, receiverId, msgtext); // Send message to Firebase Firestore
                 addMessageToLayout(msgtext); // Add the message to the UI
-                fetchMessage(chatId, senderEmail, receiverEmail, msgtext); // Save message in Firestore
+                fetchMessages(chatId, receiverId); // Save message in Firestore
                 messageInput.setText(""); // Clear the input field
             }
         });
@@ -154,30 +155,51 @@ public class personal_chat extends AppCompatActivity {
     }
 
     // Method to send the message to Firebase Firestore
-    private void fetchMessage(String chatId, String senderEmail, String receiverEmail, String messageText) {
-        long timestamp = System.currentTimeMillis();
-        Message message = new Message(senderEmail, receiverEmail, messageText, timestamp);
-
-        // Add the message to Firestore under the unique chat ID
-        db.collection("chats")
-                .document(chatId)           // Use chatId instead of senderEmail
-                .collection("messages")
-                .add(message)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d("Firestore", "Message sent successfully");
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error sending message", e);
-                });
-    }
+//    private void fetchMessage(String chatId, String senderEmail, String receiverEmail, String messageText) {
+//        long timestamp = System.currentTimeMillis();
+//        Message message = new Message(senderEmail, receiverEmail, messageText, timestamp);
+//
+//        // Add the message to Firestore under the unique chat ID
+//        db.collection("chats")
+//                .document(chatId)           // Use chatId instead of senderEmail
+//                .collection("messages")
+//                .add(message)
+//                .addOnSuccessListener(documentReference -> {
+//                    Log.d("Firestore", "Message sent successfully");
+//                })
+//                .addOnFailureListener(e -> {
+//                    Log.w("Firestore", "Error sending message", e);
+//                });
+//    }
 
     // Method to load previous messages from Firestore
-    private void loadMessages(String chatId) {
-        // Query Firestore to retrieve the messages from the unique chat ID
-        db.collection("chats")
-                .document(chatId)           // Use chatId instead of senderEmail
+//    private void loadMessages(String chatId) {
+//        // Query Firestore to retrieve the messages from the unique chat ID
+//        db.collection("chats")
+//                .document(chatId)           // Use chatId instead of senderEmail
+//                .collection("messages")
+//                .orderBy("timestamp")        // Order by the timestamp to display messages in the correct order
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Message message = document.toObject(Message.class);
+//                            addMessageToLayout(message.getMessage()); // Add each message to the UI
+//                        }
+//
+//                        // Scroll to the bottom of the ScrollView after loading all messages
+//                        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+//                    } else {
+//                        Log.w("Firestore", "Error getting messages.", task.getException());
+//                    }
+//                });
+//    }
+    public void fetchMessages(String chatId, String receiverId) {
+        firestore.collection("chats")
+                .document(chatId)
                 .collection("messages")
-                .orderBy("timestamp")        // Order by the timestamp to display messages in the correct order
+                .whereEqualTo("senderId", receiverId)
+                .orderBy("timestamp")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -192,5 +214,6 @@ public class personal_chat extends AppCompatActivity {
                         Log.w("Firestore", "Error getting messages.", task.getException());
                     }
                 });
+
     }
 }
