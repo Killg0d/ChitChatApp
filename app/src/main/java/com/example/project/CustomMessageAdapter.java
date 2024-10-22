@@ -5,27 +5,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-public class MessageAdapter extends ArrayAdapter<MessageList> {
+public class CustomMessageAdapter extends ArrayAdapter<UserMessage> {
     private static final int LAYOUT_TYPE_1 = 0; // Layout with TextView for message
     private static final int LAYOUT_TYPE_2 = 1; // Another layout with TextView for message
 
     private int layoutType = LAYOUT_TYPE_1;
 
-    public MessageAdapter(Context context, List<MessageList> items) {
+    // Constructor for layout type
+    public CustomMessageAdapter(Context context, List<UserMessage> items) {
         super(context, 0, items);
     }
 
-    public MessageAdapter(Context context, List<MessageList> items, int layoutType) {
+
+    public CustomMessageAdapter(Context context, List<UserMessage> items, int layoutType) {
         super(context, 0, items);
         this.layoutType = layoutType;
     }
@@ -33,7 +34,7 @@ public class MessageAdapter extends ArrayAdapter<MessageList> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        MessageList item = getItem(position);
+        UserMessage item = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -52,25 +53,19 @@ public class MessageAdapter extends ArrayAdapter<MessageList> {
         TextView message = convertView.findViewById(R.id.message); // Using TextView for both layout types
 
         // Populate the data into the template view using the data object
-        profilePicture.setImageResource(item.getProfilePictureResId());
         name.setText(item.getName());
         message.setText(item.getMessage());
-
-        if (layoutType == LAYOUT_TYPE_2) {
-            EditText editText = convertView.findViewById(R.id.message); // Ensure you have this EditText in layout2
-
-            // Set OnFocusChangeListener for the EditText
-            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String updatedText = editText.getText().toString();
-                        Toast.makeText(getContext(), updatedText, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+        String savedImageUrl = item.getProfilePictureURL();
+        if ( savedImageUrl != null) {
+            Glide.with(this.getContext())
+                    .load(savedImageUrl)
+                    .placeholder(R.drawable.download)
+                    .error(R.drawable.download)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profilePicture);
+        } else {
+            new BaseActivity().loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profilePicture);
         }
-
         // Return the completed view to render on screen
         return convertView;
     }
