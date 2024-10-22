@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -54,6 +55,16 @@ public class SelectContactActivity extends BaseActivity {
             // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
                 intent.putExtra("chatName", u.getFullName());
                 intent.putExtra("lastMessage", u.getDescription());
+                intent.putExtra("profileImage", u.getProfileurl());
+                intent.putExtra("receiverId", u.getUserId());
+
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                FirebaseFirestore.getInstance().collection("chats");
+                List<String> participants = new ArrayList<>();
+                participants.add(uid);
+                participants.add(u.getUserId());
+                String chatId= new ChatManager().createChat(false, participants, null);
+                intent.putExtra("chatId", chatId);
                 startActivity(intent);
                 finish();
             }

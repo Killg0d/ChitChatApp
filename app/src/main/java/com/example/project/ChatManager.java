@@ -1,25 +1,33 @@
 package com.example.project;
 
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ChatManager {
-
+    String chatId;
     private FirebaseFirestore firestore;
 
     public ChatManager() {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public void createChat(boolean isGroup, List<String> participants, String lastMessage) {
+    public String createChat(boolean isGroup, List<String> participants, String lastMessage) {
         // Create a new chat document
-        String chatId = firestore.collection("chats").document().getId(); // Auto-generated ID
+        chatId = firestore.collection("chats").document().getId(); // Auto-generated ID
         Map<String, Object> chatData = new HashMap<>();
         chatData.put("isGroup", isGroup);
         chatData.put("participants", participants);
@@ -38,5 +46,35 @@ public class ChatManager {
                     // Handle failure
                     Log.e("ChatManager", "Error creating chat", e);
                 });
+        return chatId;
     }
+
+    public void sendMessage(String chatId, String senderId, String messageText) {
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("senderId", senderId);
+        messageData.put("messageText", messageText);
+        messageData.put("sentAt", FieldValue.serverTimestamp()); // Use server timestamp for consistency
+        String messageId = firestore.collection("chats").document(chatId)
+                .collection("messsages").document().getId();
+        firestore.collection("chats").document(chatId)
+                .collection("messsages").document(messageId)
+                .set(messageData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() { // Use Void here
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Message sent successfully
+                        // ...
+                        Log.d("ChatManager", "Message sent successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle errors
+                        // ...
+                    }
+                });
+    }
+
+
 }

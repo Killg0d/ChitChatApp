@@ -131,7 +131,7 @@ public class register_page extends AppCompatActivity {
     // Method to store user data in Firestore
     private void storeUserDataInFirestore(String userId, String fullname, String email) {
         // Create a new user with name and email
-        User user = new User(fullname, email);
+        User user = new User(userId,fullname, email,null,null);
 
         // Add a new document with a generated ID
         db.collection("users").document(userId)
