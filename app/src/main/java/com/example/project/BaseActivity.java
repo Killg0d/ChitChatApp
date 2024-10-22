@@ -25,13 +25,15 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String DEFAULT_IMAGE_URI = "drawable/download"; // Replace with your default image resource
     protected static final String USER_IMAGES_PATH = "images/";
     Uri imageUri;
-    FirebaseStorage firebaseStorage;
-    StorageReference storageReference;
+    FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
+    StorageReference storageReference=firebaseStorage.getReference();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -41,6 +43,7 @@ public class BaseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     public void applyFontSizeToViews(View root, float fontSize) {
         if (root instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) root;
@@ -55,6 +58,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
+
     public void loadProfileImage(FirebaseUser currentUser, ImageView profileImg) {
         if (currentUser != null) {
             // Get the image reference from Firebase Storage
@@ -69,14 +73,12 @@ public class BaseActivity extends AppCompatActivity {
                         .error(R.drawable.download)// Optional error image
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(profileImg);
-                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("profileImageUrl", uri.toString()); // Store the URL
-                editor.apply();
             }).addOnFailureListener(e -> {
                 // If it doesn't exist, set the default image
                 profileImg.setImageResource(R.drawable.download); // Replace with actual drawable resource
             });
+
+
         } else {
             // No user is logged in, show the default image
             profileImg.setImageResource(R.drawable.download); // Replace with actual drawable resource

@@ -1,10 +1,16 @@
 package com.example.project;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,12 +28,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ProfileSetting extends BaseActivity {
@@ -36,7 +49,10 @@ public class ProfileSetting extends BaseActivity {
     ImageView profileImg;
 
     private FirebaseAuth auth;
-
+    FirebaseFirestore firestore;
+    String name;
+    String description;
+    ListView l;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +61,60 @@ public class ProfileSetting extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("ProfileSetting");
         actionBar.setDisplayHomeAsUpEnabled(true);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore = FirebaseFirestore.getInstance();
+        firestore.collection("users")
+                .document(userId) // Access the document directly by its ID
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot document) {
+                        if (!document.exists()) {
+                            Log.d("FirestoreData", "No user data found");
+                            name = "Error";  // Set default error values
+                            description = "Error";
+                            // Initialize and populate the list here
+                            ArrayList<MessageList> mitem = new ArrayList<>();
+                            mitem.add(new MessageList("Name", name, R.drawable.person));
+                            mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
+
+                            l = findViewById(R.id.list1);
+                            MessageAdapter item = new MessageAdapter(ProfileSetting.this, mitem, 1);
+                            l.setAdapter(item);
+                            return; // Early return if the document does not exist
+                        }
+
+                        // Get the 'name' field from the document
+                         name = document.getString("fullName");
+
+                        // Check if 'description' exists, otherwise set a default value
+                         description = document.contains("description")
+                                ? document.getString("description")
+                                : "Hi! I am using chitchat"; // Default description
+
+                        // Use the name and description as needed
+                        Log.d("FirestoreData", "Name: " + name + ", Description: " + description);
+                        // Initialize and populate the list here
+                        ArrayList<MessageList> mitem = new ArrayList<>();
+                        mitem.add(new MessageList("Name", name, R.drawable.person));
+                        mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
+
+                        l = findViewById(R.id.list1);
+                        MessageAdapter item = new MessageAdapter(ProfileSetting.this, mitem, 1);
+                        l.setAdapter(item);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure if any
+                        Log.e("FirestoreError", "Error fetching data", e);
+                    }
+                });
+
         ArrayList<MessageList> mitem = new ArrayList<>();
-        mitem.add(new MessageList("Name", "Full Name", R.drawable.person));
-        mitem.add(new MessageList("About", "Hi! Using ChitChat", R.drawable.baseline_info_outline_24));
+        mitem.add(new MessageList("Name", name, R.drawable.person));
+        mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
         ListView l = findViewById(R.id.list1);
         MessageAdapter item = new MessageAdapter(this, mitem, 1);
         l.setAdapter(item);
@@ -55,25 +122,13 @@ public class ProfileSetting extends BaseActivity {
         FirebaseUser currentUser = auth.getCurrentUser();
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String savedImageUrl = sharedPreferences.getString("profileImageUrl", null);
 
         frameLayout = findViewById(R.id.image);
         profileImg = findViewById(R.id.profile_image);
         frameLayout.setOnClickListener(view -> {
             chooseImage();
         });
-        if (savedImageUrl != null) {
-            Glide.with(this)
-                    .load(savedImageUrl)
-                    .placeholder(R.drawable.download)
-                    .error(R.drawable.download)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(profileImg);
-        } else {
-            loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profileImg);
-        }
-
+        loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profileImg);
     }
 
 
@@ -118,10 +173,27 @@ public class ProfileSetting extends BaseActivity {
                         @Override
                         public void onSuccess(Uri downloadUri) {
                             // Store the URL in SharedPreferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("profileImageUrl", downloadUri.toString()); // Store the URL
-                            editor.apply();
+
+                            // Update Firestore with the profile image URL
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference userRef = db.collection("users").document(userId);
+                            // Use set() to create the document if it doesn't exist, and merge to avoid overwriting existing fields
+                            userRef.set(new HashMap<String, Object>() {{
+                                        put("profileImageUrl", downloadUri.toString());
+                                    }}, SetOptions.merge())
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(ProfileSetting.this, "Profile updated", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(ProfileSetting.this, "Firestore update failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+
 
                             Toast.makeText(ProfileSetting.this, "Image uploaded", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();

@@ -39,28 +39,28 @@ public class MainChat extends AppCompatActivity {
         });
 
 
-        // Create sample chat data (replace this with actual data from the server or database)
-        messageList = new ArrayList<>();
-        messageList.add(new MessageList("John", "Hello! How are you?", R.drawable.person));
-        messageList.add(new MessageList("Alice", "Hey! What's up?", R.drawable.person));
-        messageList.add(new MessageList("Bob", "Did you have lunch?", R.drawable.person));
-
-        // Initialize the adapter and set it to the ListView
-        messageAdapter = new MessageAdapter(this, messageList, 0);  // Layout type 1 uses EditText for messages
-        chatListView.setAdapter(messageAdapter);
-
-        // Handle clicks on ListView items to open personal chat
-        chatListView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(MainChat.this, personal_chat.class);
-
-            // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
-            intent.putExtra("chatName", messageList.get(position).getName());
-            intent.putExtra("lastMessage", messageList.get(position).getMessage());
-            intent.putExtra("profileImage", messageList.get(position).getProfilePictureResId());
-
-
-            startActivity(intent);
-        });
+//        // Create sample chat data (replace this with actual data from the server or database)
+//        messageList = new ArrayList<>();
+//        messageList.add(new MessageList("John", "Hello! How are you?", R.drawable.person));
+//        messageList.add(new MessageList("Alice", "Hey! What's up?", R.drawable.person));
+//        messageList.add(new MessageList("Bob", "Did you have lunch?", R.drawable.person));
+//
+//        // Initialize the adapter and set it to the ListView
+//        messageAdapter = new MessageAdapter(this, messageList, 0);  // Layout type 1 uses EditText for messages
+//        chatListView.setAdapter(messageAdapter);
+//
+//        // Handle clicks on ListView items to open personal chat
+//        chatListView.setOnItemClickListener((parent, view, position, id) -> {
+//            Intent intent = new Intent(MainChat.this, personal_chat.class);
+//
+//            // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
+//            intent.putExtra("chatName", messageList.get(position).getName());
+//            intent.putExtra("lastMessage", messageList.get(position).getMessage());
+//            intent.putExtra("profileImage", messageList.get(position).getProfilePictureResId());
+//
+//
+//            startActivity(intent);
+//        });
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             // User is still logged in

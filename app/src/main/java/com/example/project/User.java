@@ -3,6 +3,7 @@ package com.example.project;
 public class User {
     private String fullName;
     private String email;
+    private String description;
 
     // Empty constructor required for Firestore serialization
     public User() {}
@@ -10,6 +11,11 @@ public class User {
     public User(String fullName, String email) {
         this.fullName = fullName;
         this.email = email;
+    }
+    public User(String fullName, String email,String description) {
+        this.fullName = fullName;
+        this.email = email;
+        this.description=description;
     }
 
     // Getters
@@ -19,5 +25,9 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public  String getDescription(){
+        return description;
     }
 }

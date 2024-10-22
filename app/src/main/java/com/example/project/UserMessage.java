@@ -12,6 +12,10 @@ public class UserMessage {
         this.message = message;
         this.profilePictureURL = profilePictureURL;
     }
+    public UserMessage(String name, String message) {
+        this.name = name;
+        this.message = message;
+    }
 
     public String getName() {
         return name;

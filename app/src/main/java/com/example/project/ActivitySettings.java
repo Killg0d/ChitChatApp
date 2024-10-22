@@ -21,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,6 @@ public class ActivitySettings extends BaseActivity {
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setTitle("Setting");
         ImageView profileImg = new ImageView(ActivitySettings.this);
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String savedImageUrl = sharedPreferences.getString("profileImageUrl", null);
 
 // Initialize the ListView
         ListView listView = findViewById(R.id.list_view);
@@ -48,7 +47,7 @@ public class ActivitySettings extends BaseActivity {
         ArrayList<UserMessage> messageItems = new ArrayList<>();
 
 // Add UserMessage objects to the list
-        messageItems.add(new UserMessage("Alice", "Hello!", savedImageUrl)); // Example
+        messageItems.add(new UserMessage("Alice", "Hello!")); // Example
 
 // Create an adapter and set it to the ListView
         CustomMessageAdapter adapter = new CustomMessageAdapter(this, messageItems);

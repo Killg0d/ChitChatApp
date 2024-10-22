@@ -1,4 +1,5 @@
 package com.example.project;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +49,13 @@ public class SelectContactActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 User u=(User) contactsListView.getItemAtPosition(i);
                 Toast.makeText(SelectContactActivity.this, "Selected: "+u.getFullName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SelectContactActivity.this, personal_chat.class);
+
+            // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
+                intent.putExtra("chatName", u.getFullName());
+                intent.putExtra("lastMessage", u.getDescription());
+                startActivity(intent);
+                finish();
             }
         });
 

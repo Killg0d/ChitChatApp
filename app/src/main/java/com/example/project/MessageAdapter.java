@@ -5,8 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -50,6 +55,21 @@ public class MessageAdapter extends ArrayAdapter<MessageList> {
         profilePicture.setImageResource(item.getProfilePictureResId());
         name.setText(item.getName());
         message.setText(item.getMessage());
+
+        if (layoutType == LAYOUT_TYPE_2) {
+            EditText editText = convertView.findViewById(R.id.message); // Ensure you have this EditText in layout2
+
+            // Set OnFocusChangeListener for the EditText
+            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String updatedText = editText.getText().toString();
+                        Toast.makeText(getContext(), updatedText, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         // Return the completed view to render on screen
         return convertView;
