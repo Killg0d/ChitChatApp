@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
@@ -34,6 +36,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ProfileSetting extends BaseActivity {
 
@@ -53,6 +57,72 @@ public class ProfileSetting extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("ProfileSetting");
         actionBar.setDisplayHomeAsUpEnabled(true);
+        loadItem();
+
+        ArrayList<MessageList> mitem = new ArrayList<>();
+        mitem.add(new MessageList("Name", name, R.drawable.person));
+        mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
+        ListView l = findViewById(R.id.list1);
+        MessageAdapter item = new MessageAdapter(this, mitem, 1);
+        l.setAdapter(item);
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
+
+        frameLayout = findViewById(R.id.image);
+        profileImg = findViewById(R.id.profile_image);
+        frameLayout.setOnClickListener(view -> {
+            chooseImage();
+        });
+        loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profileImg);
+    }
+    private void updateFirebase(String field, String newmsg) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("users").document(userId)
+                .get() // Getthe user document
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the current value of the field (if it exists)
+                            String currentValue = documentSnapshot.getString(field);
+                            // Update the field with the new message
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put(field, newmsg); // Assuming you have `newmsg` value
+                            db.collection("users").document(userId).update(updates);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle errors
+                        // ...
+                        Log.d("Update","failed");
+                    }
+                });
+    }
+
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            profileImg.setImageURI(imageUri);
+            uploadPicture();
+        }
+    }
+    private void loadItem(){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         firestore = FirebaseFirestore.getInstance();
         firestore.collection("users")
@@ -77,10 +147,10 @@ public class ProfileSetting extends BaseActivity {
                         }
 
                         // Get the 'name' field from the document
-                         name = document.getString("fullName");
+                        name = document.getString("fullName");
 
                         // Check if 'description' exists, otherwise set a default value
-                         description = document.contains("description")
+                        description = document.contains("description")
                                 ? document.getString("description")
                                 : "Hi! I am using chitchat"; // Default description
 
@@ -123,7 +193,22 @@ public class ProfileSetting extends BaseActivity {
                                         if (!newName.isEmpty()) {
                                             // Update the ArrayList with the new name
                                             Log.d("New",newName);
-                                           }
+                                            String field=null;
+                                            if(Objects.equals(selectedItem.getName(), "Name"))
+                                            {
+                                                field="fullName";
+                                            }
+                                            if(selectedItem.getName().equals("About"))
+                                            {
+                                                field="description";
+                                            }
+                                            if(field!=null) updateFirebase(field,newName);
+                                            item.notifyDataSetChanged();
+                                            // Introduce a delay before recreating the activity
+                                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                recreate();
+                                            }, 1000); // Delay for 1 second (1000 milliseconds)
+                                        }
                                     });
                                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -140,43 +225,7 @@ public class ProfileSetting extends BaseActivity {
                     }
                 });
 
-        ArrayList<MessageList> mitem = new ArrayList<>();
-        mitem.add(new MessageList("Name", name, R.drawable.person));
-        mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
-        ListView l = findViewById(R.id.list1);
-        MessageAdapter item = new MessageAdapter(this, mitem, 1);
-        l.setAdapter(item);
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = auth.getCurrentUser();
-        firebaseStorage = FirebaseStorage.getInstance();
-        storageReference = firebaseStorage.getReference();
-
-        frameLayout = findViewById(R.id.image);
-        profileImg = findViewById(R.id.profile_image);
-        frameLayout.setOnClickListener(view -> {
-            chooseImage();
-        });
-        loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profileImg);
     }
-
-
-    private void chooseImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            profileImg.setImageURI(imageUri);
-            uploadPicture();
-        }
-    }
-
     private void uploadPicture() {
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setTitle("Uploading Image...");
@@ -212,7 +261,9 @@ public class ProfileSetting extends BaseActivity {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(ProfileSetting.this, "Profile updated", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ProfileSetting.this, "Image updated", Toast.LENGTH_SHORT).show();
+                                            // Introduce a delay before recreating the activity
+                                            new Handler(Looper.getMainLooper()).postDelayed(ProfileSetting.this::recreate, 1000); // Delay for 1 second (1000 milliseconds)
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
