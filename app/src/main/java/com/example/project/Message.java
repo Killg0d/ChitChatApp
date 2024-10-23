@@ -1,5 +1,7 @@
 package com.example.project;
 
+import androidx.annotation.NonNull;
+
 public class Message {
     private String senderId;
     private String message;
@@ -26,5 +28,15 @@ public class Message {
 
     public long getTimestamp() {
         return sentAt;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Message{" +
+                "senderId='" + senderId + '\'' +
+                ", message='" + message + '\'' +
+                ", sentAt=" + sentAt +
+                '}';
     }
 }

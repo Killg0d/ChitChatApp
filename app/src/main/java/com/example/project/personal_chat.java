@@ -14,12 +14,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class personal_chat extends AppCompatActivity {
@@ -104,6 +106,8 @@ public class personal_chat extends AppCompatActivity {
             startActivity(intent);
         });
         fetchMessages(chatId,receiverId);
+        Log.d("chatId",chatId);
+        Log.d("recieverId",receiverId);
         // Load the previous messages for this conversation
 //        loadMessages(chatId); // Load messages using the unique chat ID
 
@@ -112,7 +116,7 @@ public class personal_chat extends AppCompatActivity {
             msgtext = messageInput.getText().toString();
             if (!msgtext.isEmpty()) {
                 new ChatManager().sendMessage(chatId, receiverId, msgtext); // Send message to Firebase Firestore
-                addMessageToLayout(msgtext); // Add the message to the UI
+//                addMessageToLayout(msgtext); // Add the message to the UI
                 fetchMessages(chatId, receiverId); // Save message in Firestore
                 messageInput.setText(""); // Clear the input field
             }
@@ -195,16 +199,24 @@ public class personal_chat extends AppCompatActivity {
 //                });
 //    }
     public void fetchMessages(String chatId, String receiverId) {
+        Log.d("fetchMessages","Working");
         firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")
                 .whereEqualTo("senderId", receiverId)
-                .orderBy("timestamp")
+                .orderBy("sentAt", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
+                    Log.w("Firestore", "Successful");
                     if (task.isSuccessful()) {
+                        Log.w("Firestore", "Successful2");
+                        if(task.getResult().isEmpty())
+                        {
+                            Log.d("No messages foumd","No messages found");
+                        }
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Message message = document.toObject(Message.class);
+                            Log.d("fetchmsg",message.toString());
                             addMessageToLayout(message.getMessage()); // Add each message to the UI
                         }
 

@@ -55,9 +55,9 @@ public class ChatManager {
         messageData.put("messageText", messageText);
         messageData.put("sentAt", FieldValue.serverTimestamp()); // Use server timestamp for consistency
         String messageId = firestore.collection("chats").document(chatId)
-                .collection("messsages").document().getId();
+                .collection("messages").document().getId();
         firestore.collection("chats").document(chatId)
-                .collection("messsages").document(messageId)
+                .collection("messages").document(messageId)
                 .set(messageData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() { // Use Void here
                     @Override
