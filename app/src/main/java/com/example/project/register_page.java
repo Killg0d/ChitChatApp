@@ -132,7 +132,6 @@ public class register_page extends AppCompatActivity {
     private void storeUserDataInFirestore(String userId, String fullname, String email) {
         // Create a new user with name and email
         User user = new User(userId,fullname, email,"Hi! Using Chitchat",null);
-
         // Add a new document with a generated ID
         db.collection("users").document(userId)
                 .set(user)

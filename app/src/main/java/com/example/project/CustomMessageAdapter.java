@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,15 +57,21 @@ public class CustomMessageAdapter extends ArrayAdapter<UserMessage> {
         name.setText(item.getName());
         message.setText(item.getMessage());
         String savedImageUrl = item.getProfilePictureURL();
-        if ( savedImageUrl != null) {
+        // Log the profile image URL
+        Log.d("ProfileImage", savedImageUrl != null ? savedImageUrl : "No URL provided");
+
+        // Check if the URL is null or empty, and handle accordingly
+        if (savedImageUrl != null && !savedImageUrl.isEmpty()) {
+            // Use Glide to load the image if URL is valid
             Glide.with(this.getContext())
                     .load(savedImageUrl)
-                    .placeholder(R.drawable.download)
-                    .error(R.drawable.download)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.download)  // Show a default placeholder while loading
+                    .error(R.drawable.person)          // Show default image in case of error
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache strategy to avoid flickering
                     .into(profilePicture);
         } else {
-            new BaseActivity().loadProfileImage(FirebaseAuth.getInstance().getCurrentUser(),profilePicture);
+            // If URL is null or empty, set a default image
+            profilePicture.setImageResource(R.drawable.person);
         }
         // Return the completed view to render on screen
         return convertView;

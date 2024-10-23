@@ -22,7 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainChat extends AppCompatActivity {
+public class MainChat extends BaseActivity {
 
     private ListView chatListView;
     private CustomMessageAdapter messageAdapter;
@@ -60,7 +60,7 @@ public class MainChat extends AppCompatActivity {
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                 if (documentSnapshot.exists()) {
                                                     String chatName = documentSnapshot.getString("fullName"); // Assuming "fullName" field in "users"
-                                                    String profileImage = documentSnapshot.getString("profileImage");
+                                                    String profileImage = documentSnapshot.getString("profileurl");
                                                     String description = documentSnapshot.getString("description");// Assuming "profileImage" field in "users"
                                                     //int profileImage = R.drawable.person;
                                                     messageList.add(new UserMessage(chatName, description, profileImage,chatId,recieverid)); // Add to messageList

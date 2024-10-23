@@ -84,5 +84,10 @@ public class BaseActivity extends AppCompatActivity {
             profileImg.setImageResource(R.drawable.download); // Replace with actual drawable resource
         }
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recreate();
+    }
 
 }

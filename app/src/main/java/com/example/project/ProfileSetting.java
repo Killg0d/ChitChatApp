@@ -55,10 +55,9 @@ public class ProfileSetting extends BaseActivity {
         setContentView(R.layout.activity_profile_setting);
         getIntent();
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("ProfileSetting");
+        actionBar.setTitle("Profile");
         actionBar.setDisplayHomeAsUpEnabled(true);
         loadItem();
-
         ArrayList<MessageList> mitem = new ArrayList<>();
         mitem.add(new MessageList("Name", name, R.drawable.person));
         mitem.add(new MessageList("About", description, R.drawable.baseline_info_outline_24));
@@ -254,10 +253,11 @@ public class ProfileSetting extends BaseActivity {
                             // Update Firestore with the profile image URL
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             DocumentReference userRef = db.collection("users").document(userId);
-                            // Use set() to create the document if it doesn't exist, and merge to avoid overwriting existing fields
-                            userRef.set(new HashMap<String, Object>() {{
-                                        put("profileImageUrl", downloadUri.toString());
-                                    }}, SetOptions.merge())
+                            // Use set() with SetOptions.merge() to update only the "profileurl" field
+                            Map<String, Object> updateData = new HashMap<>();
+                            updateData.put("profileurl", downloadUri.toString());
+
+                            userRef.set(updateData, SetOptions.merge())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -271,8 +271,6 @@ public class ProfileSetting extends BaseActivity {
                                             Toast.makeText(ProfileSetting.this, "Firestore update failed", Toast.LENGTH_SHORT).show();
                                         }
                                     });
-
-
 
                             Toast.makeText(ProfileSetting.this, "Image uploaded", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
@@ -294,6 +292,7 @@ public class ProfileSetting extends BaseActivity {
             });
         }
     }
+
 
 
 }
