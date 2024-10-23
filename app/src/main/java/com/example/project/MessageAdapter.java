@@ -57,18 +57,7 @@ public class MessageAdapter extends ArrayAdapter<MessageList> {
         message.setText(item.getMessage());
 
         if (layoutType == LAYOUT_TYPE_2) {
-            EditText editText = convertView.findViewById(R.id.message); // Ensure you have this EditText in layout2
-
-            // Set OnFocusChangeListener for the EditText
-            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String updatedText = editText.getText().toString();
-                        Toast.makeText(getContext(), updatedText, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            TextView editText = convertView.findViewById(R.id.message); // Ensure you have this EditText in layout2
         }
 
         // Return the completed view to render on screen

@@ -1,12 +1,16 @@
 package com.example.project;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -90,6 +94,42 @@ public class ProfileSetting extends BaseActivity {
                         l = findViewById(R.id.list1);
                         MessageAdapter item = new MessageAdapter(ProfileSetting.this, mitem, 1);
                         l.setAdapter(item);
+                        l.setOnItemClickListener(
+                                (parent, view, position, id) -> {
+                                    MessageList selectedItem = (MessageList) parent.getItemAtPosition(position);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileSetting.this);
+                                    builder.setTitle("Change "+selectedItem.getName());
+
+                                    // Set up the input
+                                    final EditText input = new EditText(ProfileSetting.this);
+                                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                                    input.setText(selectedItem.getMessage());
+                                    input.setPadding(10,10,10,10);
+                                    LinearLayout layout = new LinearLayout(ProfileSetting.this);
+                                    layout.setOrientation(LinearLayout.VERTICAL);
+                                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                    );
+                                    params.setMargins(40, 20, 40, 20); // Set margins (left, top, right, bottom)
+                                    input.setLayoutParams(params);
+                                    layout.addView(input); // Add EditText to the layout
+                                    builder.setView(layout); // Set the layout as the dialog view
+
+
+                                    // Set up the buttons
+                                    builder.setPositiveButton("OK", (dialog, which) -> {
+                                        String newName = input.getText().toString();
+                                        if (!newName.isEmpty()) {
+                                            // Update the ArrayList with the new name
+                                            Log.d("New",newName);
+                                           }
+                                    });
+                                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+                                    builder.show();
+                                }
+                        );
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
