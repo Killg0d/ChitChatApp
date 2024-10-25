@@ -110,12 +110,12 @@ public class personal_chat extends AppCompatActivity {
         Log.d("recieverId",receiverId);
         // Load the previous messages for this conversation
 //        loadMessages(chatId); // Load messages using the unique chat ID
-
+        String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Send button click listener
         sendbutton.setOnClickListener(v -> {
             msgtext = messageInput.getText().toString();
             if (!msgtext.isEmpty()) {
-                new ChatManager().sendMessage(chatId, receiverId, msgtext); // Send message to Firebase Firestore
+                new ChatManager().sendMessage(chatId, user, msgtext); // Send message to Firebase Firestore
 //                addMessageToLayout(msgtext); // Add the message to the UI
                 fetchMessages(chatId, receiverId); // Save message in Firestore
                 messageInput.setText(""); // Clear the input field
