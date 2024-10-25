@@ -235,60 +235,40 @@ public class ProfileSetting extends BaseActivity {
             String userId = currentUser.getUid();
             StorageReference userImageRef = storageReference.child(USER_IMAGES_PATH + userId + ".jpg");
 
-            userImageRef.putFile(imageUri).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(ProfileSetting.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+            userImageRef.putFile(imageUri).addOnFailureListener(exception -> {
+                if (!isFinishing() && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Get the download URL
-                    userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri downloadUri) {
-                            // Store the URL in SharedPreferences
+                Toast.makeText(ProfileSetting.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+            }).addOnSuccessListener(taskSnapshot -> {
+                // Get the download URL
+                userImageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                    // Update Firestore with the profile image URL
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference userRef = db.collection("users").document(userId);
+                    Map<String, Object> updateData = new HashMap<>();
+                    updateData.put("profileurl", downloadUri.toString());
 
-                            // Update Firestore with the profile image URL
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            DocumentReference userRef = db.collection("users").document(userId);
-                            // Use set() with SetOptions.merge() to update only the "profileurl" field
-                            Map<String, Object> updateData = new HashMap<>();
-                            updateData.put("profileurl", downloadUri.toString());
+                    userRef.update(updateData)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(ProfileSetting.this, "Image updated", Toast.LENGTH_SHORT).show();
+                                // Delay before recreating the activity
+                                //new Handler(Looper.getMainLooper()).postDelayed(ProfileSetting.this::recreate, 1000);
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(ProfileSetting.this, "Firestore update failed", Toast.LENGTH_SHORT).show());
 
-                            userRef.set(updateData, SetOptions.merge())
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Toast.makeText(ProfileSetting.this, "Image updated", Toast.LENGTH_SHORT).show();
-                                            // Introduce a delay before recreating the activity
-                                            new Handler(Looper.getMainLooper()).postDelayed(ProfileSetting.this::recreate, 1000); // Delay for 1 second (1000 milliseconds)
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(ProfileSetting.this, "Firestore update failed", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                            Toast.makeText(ProfileSetting.this, "Image uploaded", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ProfileSetting.this, "Failed to get download URL", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                    });
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    double progressPercent = ((double) (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount());
-                    dialog.setMessage("Percentage: " + (int) progressPercent + "%");
-                }
+                    if (!isFinishing() && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }).addOnFailureListener(e -> {
+                    if (!isFinishing() && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Toast.makeText(ProfileSetting.this, "Failed to get download URL", Toast.LENGTH_SHORT).show();
+                });
+            }).addOnProgressListener(snapshot -> {
+                double progressPercent = ((double) (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount());
+                dialog.setMessage("Percentage: " + (int) progressPercent + "%");
             });
         }
     }

@@ -71,7 +71,6 @@ public class BaseActivity extends AppCompatActivity {
                         .load(uri)
                         .placeholder(R.drawable.download) // Optional placeholder
                         .error(R.drawable.download)// Optional error image
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(profileImg);
             }).addOnFailureListener(e -> {
                 // If it doesn't exist, set the default image

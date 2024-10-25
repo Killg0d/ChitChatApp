@@ -2,6 +2,8 @@ package com.example.project;
 
 import android.widget.ImageView;
 
+import com.google.firebase.Timestamp;
+
 public class UserMessage {
     private String name;
     private String message;
@@ -9,6 +11,7 @@ public class UserMessage {
     String chatId;
     String recieverid;
     boolean isGroup;
+    Timestamp lastMessageTime;
 
     public UserMessage(String name, String message, String profilePictureURL) {
         this.name = name;
@@ -34,6 +37,15 @@ public class UserMessage {
         this.recieverid= recieverid;
         this.isGroup=isGroup;
     }
+    public UserMessage(String name, String message, String profilePictureURL, String chatId, String recieverid,boolean isGroup,Timestamp lastMessageTime) {
+        this.name = name;
+        this.message = message;
+        this.profilePictureURL = profilePictureURL;
+        this.chatId =chatId;
+        this.recieverid= recieverid;
+        this.isGroup=isGroup;
+        this.lastMessageTime= lastMessageTime;
+    }
 
     public String getName() {
         return name;
@@ -54,5 +66,9 @@ public class UserMessage {
     }
     public boolean isGroup() {
         return isGroup;
+    }
+
+    public Timestamp getLastMessageTime() {
+        return lastMessageTime;
     }
 }

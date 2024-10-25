@@ -83,7 +83,7 @@ public class User {
     @NonNull
     @Override
     public String toString() {
-        Log.d("User:", getUserId() + " " + getFullName() + " " + getDescription() + " " + getEmail());
+        Log.d("User:", getUserId() + " " + getFullName() + " " + getDescription() + " " + getEmail()+" "+getProfileurl());
         return super.toString();
     }
 }

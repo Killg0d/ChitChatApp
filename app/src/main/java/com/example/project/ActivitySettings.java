@@ -54,6 +54,7 @@ public class ActivitySettings extends BaseActivity {
             @Override
             public void onCallback(User user) {
                 messageItems.add(user);
+                Log.d("User:",user.toString());
                 adapter.notifyDataSetChanged();
             }
 

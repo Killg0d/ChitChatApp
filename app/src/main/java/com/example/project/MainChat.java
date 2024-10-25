@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainChat extends BaseActivity {
@@ -32,13 +34,6 @@ public class MainChat extends BaseActivity {
     private Handler handler = new Handler();
 
     // Runnable to refresh chat list
-    private Runnable chatRefreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            loadChatData(); // Method to fetch and update chat data
-            handler.postDelayed(this, 30000); // Refresh every 2 seconds
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +92,8 @@ public class MainChat extends BaseActivity {
             // User is not logged in
             Log.d("FirebaseAuth", "User is not authenticated");
         }
-        handler.post(chatRefreshRunnable);
+        loadChatData();
+
     }
     @Override
     protected void onResume() {
@@ -108,56 +104,85 @@ public class MainChat extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(chatRefreshRunnable); // Stop refreshing when paused
+         // Stop refreshing when paused
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(chatRefreshRunnable); // Clean up handler
+        // Clean up handler
     }
     private void loadChatData() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         FirebaseFirestore.getInstance().collection("chats")
                 .whereArrayContains("participants", userId)
                 .orderBy("lastMessageTime", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        messageList.clear(); // Clear the list before adding new data
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.d("ChatData", "Error loading chats", e);
+                        return;
+                    }
+                    if (snapshots != null) {
+                        final int[] counter = {0}; // Counter for tracking document processing
+
+                        for (QueryDocumentSnapshot document : snapshots) {
                             boolean isGroup = document.getBoolean("isGroup");
                             List<String> participants = (List<String>) document.get("participants");
-                            if (participants != null && participants.size() == 2&&!isGroup) {
+                            String chatId = document.getId();
+                            Timestamp lastMessageTime = document.getTimestamp("lastMessageTime");
+
+                            if (participants != null && participants.size() == 2 && !isGroup) {
                                 String receiverId = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
-                                String chatId = document.getId();
+
                                 FirebaseFirestore.getInstance().collection("users").document(receiverId)
                                         .get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                if (documentSnapshot.exists()) {
-                                                    String chatName = documentSnapshot.getString("fullName");
-                                                    String profileImage = documentSnapshot.getString("profileurl");
-                                                    String description = documentSnapshot.getString("description");
-                                                    messageList.add(new UserMessage(chatName, description, profileImage, chatId, receiverId));
-                                                    messageAdapter.notifyDataSetChanged();
-                                                }
+                                        .addOnSuccessListener(documentSnapshot -> {
+                                            if (documentSnapshot.exists()) {
+                                                String chatName = documentSnapshot.getString("fullName");
+                                                String profileImage = documentSnapshot.getString("profileurl");
+                                                String description = documentSnapshot.getString("description");
+
+                                                // Create new message
+                                                UserMessage newMessage = new UserMessage(chatName, description, profileImage, chatId, receiverId,false, lastMessageTime);
+
+                                                // Insert the new message at the correct position
+                                                insertMessageInOrder(newMessage);
+                                                messageAdapter.notifyDataSetChanged();
                                             }
+                                            counter[0]++;
                                         });
-                            }
-                            else{
+                            } else {
                                 String groupName = document.getString("groupName");
-                                String chatId = document.getId();
-                                messageList.add(new UserMessage(groupName,"Hey Everyone",null, chatId,null,true));
-                                messageAdapter.notifyDataSetChanged();
+                                UserMessage newMessage = new UserMessage(groupName, "Hey Everyone", null, chatId, null, true, lastMessageTime);
+
+                                // Insert the new message at the correct position
+                                insertMessageInOrder(newMessage);
+                                counter[0]++;
                             }
                         }
-                    } else {
-                        Log.d("ChatData", "Error loading chats");
                     }
                 });
     }
+
+    // Method to insert a message while maintaining order based on lastMessageTime
+    private void insertMessageInOrder(UserMessage newMessage) {
+        int index = Collections.binarySearch(messageList, newMessage, (msg1, msg2) -> {
+            if (msg1.getLastMessageTime() != null && msg2.getLastMessageTime() != null) {
+                return msg2.getLastMessageTime().compareTo(msg1.getLastMessageTime()); // Sort in descending order
+            }
+            return 0; // If timestamps are null, keep the original order
+        });
+
+        // If the message is not found, the index will be negative. Convert it to the appropriate insertion point.
+        if (index < 0) {
+            index = -(index + 1); // Calculate the insertion point
+        }
+
+        messageList.add(index, newMessage); // Insert the new message at the calculated index
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
