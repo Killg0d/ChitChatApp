@@ -3,6 +3,7 @@ package com.example.project;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,16 @@ public class MainChat extends BaseActivity {
     private ListView chatListView;
     private CustomMessageAdapter messageAdapter;
     private List<UserMessage> messageList;
+    private Handler handler = new Handler();
 
+    // Runnable to refresh chat list
+    private Runnable chatRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            loadChatData(); // Method to fetch and update chat data
+            handler.postDelayed(this, 2000); // Refresh every 2 seconds
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,43 +52,6 @@ public class MainChat extends BaseActivity {
             Intent intent = new Intent(MainChat.this, SelectContactActivity.class);
             startActivity(intent);
         });
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseFirestore.getInstance().collection("chats")
-                .whereArrayContains("participants", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            List<String>participants = (List<String>) document.get("participants");
-                            if (participants != null && participants.size() == 2) { // Assuming 2 participants in a chat
-                                String recieverid = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
-                                String chatId = document.getId();
-                                FirebaseFirestore.getInstance().collection("users").document(recieverid)
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                if (documentSnapshot.exists()) {
-                                                    String chatName = documentSnapshot.getString("fullName"); // Assuming "fullName" field in "users"
-                                                    String profileImage = documentSnapshot.getString("profileurl");
-                                                    String description = documentSnapshot.getString("description");// Assuming "profileImage" field in "users"
-                                                    //int profileImage = R.drawable.person;
-                                                    messageList.add(new UserMessage(chatName, description, profileImage,chatId,recieverid)); // Add to messageList
-                                                    messageAdapter.notifyDataSetChanged(); // Notify adapter of data change
-                                                }
-                                            }
-                                        });
-
-
-                                // Use otherParticipantId as needed
-                                // ...
-                            }
-                        }
-                    } else {
-                        // Handle errors
-                        // ...
-                    }
-                });
 
 
 //        // Create sample chat data (replace this with actual data from the server or database)
@@ -112,8 +85,59 @@ public class MainChat extends BaseActivity {
             // User is not logged in
             Log.d("FirebaseAuth", "User is not authenticated");
         }
+        handler.post(chatRefreshRunnable);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Start refreshing chat on resume
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(chatRefreshRunnable); // Stop refreshing when paused
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(chatRefreshRunnable); // Clean up handler
+    }
+    private void loadChatData() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("chats")
+                .whereArrayContains("participants", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        messageList.clear(); // Clear the list before adding new data
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            List<String> participants = (List<String>) document.get("participants");
+                            if (participants != null && participants.size() == 2) {
+                                String receiverId = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
+                                String chatId = document.getId();
+                                FirebaseFirestore.getInstance().collection("users").document(receiverId)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.exists()) {
+                                                    String chatName = documentSnapshot.getString("fullName");
+                                                    String profileImage = documentSnapshot.getString("profileurl");
+                                                    String description = documentSnapshot.getString("description");
+                                                    messageList.add(new UserMessage(chatName, description, profileImage, chatId, receiverId));
+                                                    messageAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    } else {
+                        Log.d("ChatData", "Error loading chats");
+                    }
+                });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
