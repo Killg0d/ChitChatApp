@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -18,11 +19,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class personal_chat extends AppCompatActivity {
     FirebaseFirestore firestore;
@@ -37,10 +45,13 @@ public class personal_chat extends AppCompatActivity {
     private ScrollView scrollView;        // ScrollView for scrolling messages
     private String msgtext;
     private EditText messageInput;
-    private String chatId;                // Unique chat ID for each conversation
+    private String chatId;// Unique chat ID for each conversation
     String receiverId;
     String chatName;
     String profileImage;
+    ListView messageView;
+    List<Message> messageTextList;
+    MessageTextAdapter aa;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,76 +139,14 @@ public class personal_chat extends AppCompatActivity {
             onBackPressed();
             finish();
         });
+        messageView= findViewById(R.id.messageListView);
+        messageTextList = new ArrayList<>();
+        aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
+        messageView.setAdapter(aa);
     }
 
-    // Method to dynamically add a message to the layout
-    private void addMessageToLayout(String messageText) {
-        // Create a new TextView for the message
-        TextView messageTextView = new TextView(this);
 
-        // Set the text of the TextView to the message
-        messageTextView.setText(messageText);
 
-        // Set layout parameters for the TextView
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(16, 8, 16, 8); // Optional: Add margins
-        messageTextView.setLayoutParams(params);
-
-        // Set style for the TextView (e.g., padding, background)
-        messageTextView.setPadding(16, 16, 16, 16);
-        messageTextView.setBackgroundResource(R.drawable.message_background); // Set background drawable
-        messageTextView.setTextColor(getResources().getColor(R.color.black)); // Set text color
-
-        // Add the new TextView to the messages layout
-        messagesLayout.addView(messageTextView);
-
-        // Scroll to the bottom of the ScrollView when a new message is added
-        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
-    }
-
-    // Method to send the message to Firebase Firestore
-//    private void fetchMessage(String chatId, String senderEmail, String receiverEmail, String messageText) {
-//        long timestamp = System.currentTimeMillis();
-//        Message message = new Message(senderEmail, receiverEmail, messageText, timestamp);
-//
-//        // Add the message to Firestore under the unique chat ID
-//        db.collection("chats")
-//                .document(chatId)           // Use chatId instead of senderEmail
-//                .collection("messages")
-//                .add(message)
-//                .addOnSuccessListener(documentReference -> {
-//                    Log.d("Firestore", "Message sent successfully");
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.w("Firestore", "Error sending message", e);
-//                });
-//    }
-
-    // Method to load previous messages from Firestore
-//    private void loadMessages(String chatId) {
-//        // Query Firestore to retrieve the messages from the unique chat ID
-//        db.collection("chats")
-//                .document(chatId)           // Use chatId instead of senderEmail
-//                .collection("messages")
-//                .orderBy("timestamp")        // Order by the timestamp to display messages in the correct order
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                            Message message = document.toObject(Message.class);
-//                            addMessageToLayout(message.getMessage()); // Add each message to the UI
-//                        }
-//
-//                        // Scroll to the bottom of the ScrollView after loading all messages
-//                        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
-//                    } else {
-//                        Log.w("Firestore", "Error getting messages.", task.getException());
-//                    }
-//                });
-//    }
     public void fetchMessages(String chatId, String receiverId) {
         Log.d("fetchMessages","Working");
         firestore.collection("chats")
@@ -214,11 +163,21 @@ public class personal_chat extends AppCompatActivity {
                             Log.d("No messages foumd","No messages found");
                         }
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Message message = document.toObject(Message.class);
+                            Timestamp sentAtTimestamp = document.getTimestamp("sentAt");
+                            if (sentAtTimestamp != null) {
+                                Date sentAtDate = sentAtTimestamp.toDate();
+                                Log.d("sentAt", new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(sentAtDate));
+                            } else {
+                                Log.d("sentAt", "Timestamp is null");
+                            }
+                            Message message = new Message(document.getString("senderId"), document.getString("message"), sentAtTimestamp);
                             Log.d("fetchmsg",message.toString());
-                            addMessageToLayout(message.getMessage()); // Add each message to the UI
+                            messageTextList.add(message);
+                           // Add each message to the UI
                         }
-
+                        MessageTextAdapter aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
+                        messageView.setAdapter(aa);
+                        aa.notifyDataSetChanged();
                         // Scroll to the bottom of the ScrollView after loading all messages
                         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
                     } else {
