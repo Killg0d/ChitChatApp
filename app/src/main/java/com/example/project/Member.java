@@ -8,13 +8,15 @@ public class Member implements Parcelable {
     private String status;
     private int profileImageResId; // For profile image resource
     private boolean isSelected;
+    private String uid;
 
     // Constructor
-    public Member(String name, String status, int profileImageResId, boolean isSelected) {
+    public Member(String name, String status, int profileImageResId, boolean isSelected, String uid) {
         this.name = name;
         this.status = status;
         this.profileImageResId = profileImageResId;
         this.isSelected = isSelected;
+        this.uid = uid;
     }
 
     // Getters
@@ -33,6 +35,7 @@ public class Member implements Parcelable {
     public boolean isSelected() {
         return isSelected;
     }
+    public String getUid() {return uid;}
 
     // Setters
     public void setName(String name) {

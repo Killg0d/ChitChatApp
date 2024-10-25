@@ -1,7 +1,6 @@
 package com.example.project;
 
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class User {
@@ -10,6 +9,7 @@ public class User {
     private String email;
     private String description;
     private String profileurl;
+    private boolean isSelected; // New field for selection tracking
 
     // Empty constructor required for Firestore serialization
     public User() {}
@@ -27,6 +27,7 @@ public class User {
         this.email = email;
         this.description = description;
         this.profileurl = profileurl;
+        this.isSelected = false; // Default to false
     }
 
     // Getters for Firebase to map data correctly
@@ -50,7 +51,11 @@ public class User {
         return profileurl;
     }
 
-    // You can optionally add setters if you plan to update the object after creation
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    // Setters for Firebase or updating selection status
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -71,10 +76,14 @@ public class User {
         this.profileurl = profileurl;
     }
 
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        Log.d("User:",getUserId()+" "+getFullName()+" "+getDescription()+" "+getEmail());
+        Log.d("User:", getUserId() + " " + getFullName() + " " + getDescription() + " " + getEmail());
         return super.toString();
     }
 }
