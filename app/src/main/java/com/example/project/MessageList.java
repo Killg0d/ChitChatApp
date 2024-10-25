@@ -6,6 +6,7 @@ public class MessageList {
     private int profilePictureResId;
     String chatId;
     String recieverid;
+    boolean isGroup;
 
     public MessageList(String name, String message, int profilePictureResId) {
         this.name = name;
@@ -20,6 +21,7 @@ public class MessageList {
         this.chatId =chatId;
         this.recieverid= recieverid;
     }
+
 
     public String getName() {
         return name;
@@ -38,7 +40,9 @@ public class MessageList {
     public String getReceiverId() {
         return recieverid;
     }
-
+    public boolean getIsGroup() {
+        return isGroup;
+    }
     // Getter for lastMessage
 
 
