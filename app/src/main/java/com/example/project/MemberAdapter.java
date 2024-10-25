@@ -13,9 +13,9 @@ import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
-    private List<Member> memberList;
+    private List<User> memberList;
 
-    public MemberAdapter(List<Member> memberList) {
+    public MemberAdapter(List<User> memberList) {
         this.memberList = memberList;
     }
 
@@ -28,21 +28,32 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
     @Override
     public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
-        Member member = memberList.get(position);
-        holder.nameTextView.setText(member.getName());
-        holder.statusTextView.setText(member.getStatus());
-        holder.profileImageView.setImageResource(member.getProfileImageResId());
-        holder.checkBox.setChecked(member.isSelected());
+        User member = memberList.get(position);
+        holder.nameTextView.setText(member.getFullName());
+        holder.statusTextView.setText(member.getDescription());
 
-        // Set the checkbox change listener
+        // Here you would load the profile image with an image loading library if necessary
+        // Example using a placeholder:
+        holder.profileImageView.setImageResource(R.drawable.ic_person);
+
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            member.setSelected(isChecked);
+            member.setSelected(isChecked); // Set selection status if needed
         });
     }
 
     @Override
     public int getItemCount() {
         return memberList.size();
+    }
+
+    public List<User> getSelectedMembers() {
+        List<User> selectedMembers = new ArrayList<>();
+        for (User member : memberList) {
+            if (member.isSelected()) { // Assuming `User` has `isSelected()` method
+                selectedMembers.add(member);
+            }
+        }
+        return selectedMembers;
     }
 
     // ViewHolder class
@@ -58,16 +69,5 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             profileImageView = itemView.findViewById(R.id.profileImageView);
             checkBox = itemView.findViewById(R.id.checkBox);
         }
-    }
-
-    // Method to get the selected members
-    public List<Member> getSelectedMembers() {
-        List<Member> selectedMembers = new ArrayList<>();
-        for (Member member : memberList) {
-            if (member.isSelected()) {
-                selectedMembers.add(member);
-            }
-        }
-        return selectedMembers;
     }
 }
