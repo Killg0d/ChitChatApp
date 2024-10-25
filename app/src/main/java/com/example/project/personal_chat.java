@@ -203,7 +203,6 @@ public class personal_chat extends AppCompatActivity {
         firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")
-                .whereEqualTo("senderId", receiverId)
                 .orderBy("sentAt", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
