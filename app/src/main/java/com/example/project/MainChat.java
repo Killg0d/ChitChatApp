@@ -35,7 +35,7 @@ public class MainChat extends BaseActivity {
         @Override
         public void run() {
             loadChatData(); // Method to fetch and update chat data
-            handler.postDelayed(this, 2000); // Refresh every 2 seconds
+            handler.postDelayed(this, 3000); // Refresh every 2 seconds
         }
     };
 
