@@ -30,7 +30,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private LinearLayout clickToName,messagesLayout;
     private TextView groupNameTextView;
     private FirebaseFirestore firestore;
-
+    private ScrollView scrollView;
 
     private String chatId;               // Unique group ID for each group conversation
     private String groupName;             // Group name for display
@@ -44,15 +44,16 @@ public class GroupChatActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
 
         // Initialize views
-        recyclerView = findViewById(R.id.recyclerView);
+
         messageInput = findViewById(R.id.message_input);
         sendButton = findViewById(R.id.send_button);
         emojiButton = findViewById(R.id.emoji_button);
         backButton = findViewById(R.id.back_button);
         clickToName = findViewById(R.id.clicktoname);
-        groupNameTextView = findViewById(R.id.group_name);
+
         messagesLayout = findViewById(R.id.messages);
-        recyclerView = findViewById(R.id.recyclerView);
+
+        scrollView=findViewById(R.id.messages_scroll_view);
 
 
         // Retrieve the group name and ID from the Intent
@@ -61,27 +62,22 @@ public class GroupChatActivity extends AppCompatActivity {
         chatId = intent.getStringExtra("chatId"); // Ensure GROUP_ID is passed for unique group chat
 
         // Display the group name
-        if (groupName != null && !groupName.isEmpty()) {
-            groupNameTextView.setText(groupName);
-        }
 
-        // Set up RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Set the chat as a group in Firestore
-        setGroupChatInFirestore();
-
+        TextView chatname=findViewById(R.id.chat_name);
+        chatname.setText(groupName);
         // Back button functionality
         backButton.setOnClickListener(v -> {
-            startActivity(new Intent(GroupChatActivity.this, MainChat.class));
+            onBackPressed();
             finish();
+
         });
 
         // Handle send button click event
         sendButton.setOnClickListener(view -> {
             String message = messageInput.getText().toString();
             if (!message.isEmpty()) {
-                sendMessage(message);
+                new ChatManager().sendMessage(chatId,FirebaseAuth.getInstance().getCurrentUser().getUid(),message);
+                fetchMessages(chatId);
                 messageInput.setText(""); // Clear input field after sending
             }
         });
@@ -90,33 +86,9 @@ public class GroupChatActivity extends AppCompatActivity {
         fetchMessages(chatId);
     }
 
-    // Method to mark chat as group chat in Firestore
-    private void setGroupChatInFirestore() {
-        DocumentReference groupRef = firestore.collection("chats").document(chatId);
-        groupRef.update("isGroup", true)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Group chat marked as group."))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error updating isGroup field", e));
-    }
 
-    // Method to send a message in a group chat
-    private void sendMessage(String messageText) {
-        long timestamp = System.currentTimeMillis();
 
-        Map<String, Object> messageData = new HashMap<>();
-        messageData.put("message", messageText);
-        messageData.put("senderId", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        messageData.put("sentAt", timestamp);
-        messageData.put("isGroup", true); // Mark message as part of a group
 
-        // Add message to Firestore under the group ID
-        firestore.collection("chats").document(chatId).collection("messages")
-                .add(messageData)
-                .addOnSuccessListener(documentReference -> Log.d("Firestore", "Message sent successfully"))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error sending message", e));
-
-        // Add message to UI
-        addMessageToLayout(messageText);
-    }
 
     // Method to fetch previous messages for the group chat
     private void fetchMessages(String groupId) {
@@ -141,23 +113,30 @@ public class GroupChatActivity extends AppCompatActivity {
 
     // Method to dynamically add a message to the layout
     private void addMessageToLayout(String messageText) {
+        // Create a new TextView for the message
         TextView messageTextView = new TextView(this);
+
+        // Set the text of the TextView to the message
         messageTextView.setText(messageText);
 
+        // Set layout parameters for the TextView
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(16, 8, 16, 8);
+        params.setMargins(16, 8, 16, 8); // Optional: Add margins
         messageTextView.setLayoutParams(params);
 
+        // Set style for the TextView (e.g., padding, background)
         messageTextView.setPadding(16, 16, 16, 16);
-        messageTextView.setBackgroundResource(R.drawable.message_background); // Background for message
-        messageTextView.setTextColor(getResources().getColor(R.color.black)); // Text color
+        messageTextView.setBackgroundResource(R.drawable.message_background); // Set background drawable
+        messageTextView.setTextColor(getResources().getColor(R.color.black)); // Set text color
 
+        // Add the new TextView to the messages layout
         messagesLayout.addView(messageTextView);
 
-        // Scroll to bottom of ScrollView when new message added
-
+        // Scroll to the bottom of the ScrollView when a new message is added
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
+
 }

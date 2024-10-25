@@ -36,7 +36,7 @@ public class MainChat extends BaseActivity {
         @Override
         public void run() {
             loadChatData(); // Method to fetch and update chat data
-            handler.postDelayed(this, 3000); // Refresh every 2 seconds
+            handler.postDelayed(this, 30000); // Refresh every 2 seconds
         }
     };
 
@@ -67,16 +67,27 @@ public class MainChat extends BaseActivity {
 //
 //        // Handle clicks on ListView items to open personal chat
         chatListView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(MainChat.this, personal_chat.class);
+            if(messageList.get(position).isGroup())
+            {
+                Intent intent = new Intent(MainChat.this, GroupChatActivity.class);
+                intent.putExtra("chatId", messageList.get(position).getChatId());
+                intent.putExtra("GROUP_NAME", messageList.get(position).getName());
 
-            // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
-            intent.putExtra("chatName", messageList.get(position).getName());
-            intent.putExtra("lastMessage", messageList.get(position).getMessage());
-            intent.putExtra("profileImage", messageList.get(position).getProfilePictureURL());
-            intent.putExtra("receiverId", messageList.get(position).getReceiverId());
-            intent.putExtra("chatId",messageList.get(position).getChatId());
-            Log.d("ChatId", messageList.get(position).getChatId());
-            startActivity(intent);
+                startActivity(intent);
+            }
+            else
+            {
+                Intent intent = new Intent(MainChat.this, personal_chat.class);
+
+                // Pass the selected chat's data (e.g., name, last message) to the personal_chat activity
+                intent.putExtra("chatName", messageList.get(position).getName());
+                intent.putExtra("lastMessage", messageList.get(position).getMessage());
+                intent.putExtra("profileImage", messageList.get(position).getProfilePictureURL());
+                intent.putExtra("receiverId", messageList.get(position).getReceiverId());
+                intent.putExtra("chatId",messageList.get(position).getChatId());
+                Log.d("ChatId", messageList.get(position).getChatId());
+                startActivity(intent);
+            }
         });
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -115,8 +126,9 @@ public class MainChat extends BaseActivity {
                     if (task.isSuccessful()) {
                         messageList.clear(); // Clear the list before adding new data
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            boolean isGroup = document.getBoolean("isGroup");
                             List<String> participants = (List<String>) document.get("participants");
-                            if (participants != null && participants.size() == 2) {
+                            if (participants != null && participants.size() == 2&&!isGroup) {
                                 String receiverId = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
                                 String chatId = document.getId();
                                 FirebaseFirestore.getInstance().collection("users").document(receiverId)
@@ -133,6 +145,12 @@ public class MainChat extends BaseActivity {
                                                 }
                                             }
                                         });
+                            }
+                            else{
+                                String groupName = document.getString("groupName");
+                                String chatId = document.getId();
+                                messageList.add(new UserMessage(groupName,"Hey Everyone",null, chatId,null,true));
+                                messageAdapter.notifyDataSetChanged();
                             }
                         }
                     } else {

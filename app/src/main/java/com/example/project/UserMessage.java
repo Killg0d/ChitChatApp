@@ -8,6 +8,7 @@ public class UserMessage {
     private String profilePictureURL;
     String chatId;
     String recieverid;
+    boolean isGroup;
 
     public UserMessage(String name, String message, String profilePictureURL) {
         this.name = name;
@@ -24,6 +25,14 @@ public class UserMessage {
     public UserMessage(String name, String message) {
         this.name = name;
         this.message = message;
+    }
+    public UserMessage(String name, String message, String profilePictureURL, String chatId, String recieverid,boolean isGroup) {
+        this.name = name;
+        this.message = message;
+        this.profilePictureURL = profilePictureURL;
+        this.chatId =chatId;
+        this.recieverid= recieverid;
+        this.isGroup=isGroup;
     }
 
     public String getName() {
@@ -42,5 +51,8 @@ public class UserMessage {
     }
     public String getReceiverId() {
         return recieverid;
+    }
+    public boolean isGroup() {
+        return isGroup;
     }
 }

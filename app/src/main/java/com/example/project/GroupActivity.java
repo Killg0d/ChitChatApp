@@ -87,7 +87,7 @@ public class GroupActivity extends AppCompatActivity {
                             // Pass chatId and groupName to GroupChatActivity
                             Intent intent = new Intent(GroupActivity.this, GroupChatActivity.class);
                             intent.putExtra("GROUP_NAME", groupName);
-                            intent.putExtra("chatId", chatId); // Pass the chatId
+                            intent.putExtra("chatId", chatId);// Pass the chatId
                             startActivity(intent);
 
                         })

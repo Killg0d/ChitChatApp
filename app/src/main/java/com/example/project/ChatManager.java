@@ -121,31 +121,6 @@ public class ChatManager {
                     }
                 });
     }
-    public void sendMessage(String chatId, String senderId, String messageText,boolean isGroup) {
-        Map<String, Object> messageData = new HashMap<>();
-        messageData.put("senderId", senderId);
-        messageData.put("message", messageText);
-        messageData.put("sentAt", FieldValue.serverTimestamp()); // Use server timestamp for consistency
-        String messageId = firestore.collection("chats").document(chatId)
-                .collection("messages").document().getId();
-        firestore.collection("chats").document(chatId)
-                .collection("messages").document(messageId)
-                .set(messageData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() { // Use Void here
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Message sent successfully
-                        // ...
-                        Log.d("ChatManager", "Message sent successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle errors
-                        // ...
-                    }
-                });
-    }
+
 
 }
