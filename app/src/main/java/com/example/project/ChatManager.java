@@ -65,6 +65,26 @@ public class ChatManager {
                         // Message sent successfully
                         // ...
                         Log.d("ChatManager", "Message sent successfully");
+
+                        // Now update the main chat document with the last message and last message time
+                        Map<String, Object> chatUpdate = new HashMap<>();
+                        chatUpdate.put("lastMessage", messageText);
+                        chatUpdate.put("lastMessageTime", FieldValue.serverTimestamp());
+
+                        firestore.collection("chats").document(chatId)
+                                .update(chatUpdate)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("ChatManager", "Chat lastMessage and lastMessageTime updated successfully");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("ChatManager", "Error updating chat lastMessage or lastMessageTime", e);
+                                    }
+                                });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
