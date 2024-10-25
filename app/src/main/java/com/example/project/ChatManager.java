@@ -52,7 +52,7 @@ public class ChatManager {
     public void sendMessage(String chatId, String senderId, String messageText) {
         Map<String, Object> messageData = new HashMap<>();
         messageData.put("senderId", senderId);
-        messageData.put("messageText", messageText);
+        messageData.put("message", messageText);
         messageData.put("sentAt", FieldValue.serverTimestamp()); // Use server timestamp for consistency
         String messageId = firestore.collection("chats").document(chatId)
                 .collection("messages").document().getId();
