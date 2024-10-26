@@ -139,7 +139,11 @@ public class GroupChatActivity extends AppCompatActivity {
                         messageView.setAdapter(aa);
                         aa.notifyDataSetChanged();
                         // Scroll to the bottom of the ScrollView after loading all messages
-                        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+                        messageView.post(() -> {
+                            // Select the last row so it will scroll into view...
+                            messageView.setSelection(aa.getCount() - 1);
+                        });
+
                     } else {
                         Log.w("Firestore", "Error getting messages.", task.getException());
                     }
