@@ -114,6 +114,7 @@ public class personal_chat extends AppCompatActivity {
         clicktoname = findViewById(R.id.clicktoname);
         clicktoname.setOnClickListener(v -> {
             Intent intent = new Intent(this, Chat_partner_profile.class);
+            intent.putExtra("receiverId",receiverId);
             startActivity(intent);
         });
 

@@ -32,6 +32,7 @@ public class MainChat extends BaseActivity {
     private CustomMessageAdapter messageAdapter;
     private List<UserMessage> messageList;
     private Handler handler = new Handler();
+    String receiverId;
 
     // Runnable to refresh chat list
 
@@ -133,7 +134,7 @@ public class MainChat extends BaseActivity {
                             Timestamp lastMessageTime = document.getTimestamp("lastMessageTime");
 
                             if (participants != null && participants.size() == 2 && !isGroup) {
-                                String receiverId = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
+                                receiverId = participants.get(0).equals(userId) ? participants.get(1) : participants.get(0);
 
                                 FirebaseFirestore.getInstance().collection("users").document(receiverId)
                                         .get()
