@@ -58,10 +58,10 @@ public class Chat_partner_profile extends AppCompatActivity {
         statusMessage.setText("Hey! I am using ChitChat.");
 
         TextView groupOneText = findViewById(R.id.groupOneText);
-        groupOneText.setText("Friends");
+        groupOneText.setText("grp");
 
         TextView groupTwoText = findViewById(R.id.groupTwoText);
-        groupTwoText.setText("Family");
+        groupTwoText.setText("family");
         FirebaseFirestore.getInstance().collection("chats")
                 .whereArrayContains("participants", Arrays.asList(userId, receiverId))
                 .addSnapshotListener((snapshots, e) -> {
