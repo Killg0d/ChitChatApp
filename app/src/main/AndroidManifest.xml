@@ -68,6 +68,7 @@
             android:theme="@style/Theme.Design.NoActionBar" />
         <activity
             android:name=".GroupDetailsActivity"
+            android:exported="false"
             android:theme="@style/Theme.Design.NoActionBar" />
         <activity
             android:name=".MainActivity"

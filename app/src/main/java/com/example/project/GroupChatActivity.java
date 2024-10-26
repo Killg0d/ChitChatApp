@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class GroupChatActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private EditText messageInput;
     private ImageButton sendButton, emojiButton, backButton;
@@ -38,7 +37,6 @@ public class GroupChatActivity extends AppCompatActivity {
     private TextView groupNameTextView;
     private FirebaseFirestore firestore;
     private ScrollView scrollView;
-
     private String chatId;               // Unique group ID for each group conversation
     private String groupName;
     ListView messageView;
@@ -92,19 +90,20 @@ public class GroupChatActivity extends AppCompatActivity {
             }
         });
 
-        // Fetch previous messages for the group
+        clickToName.setOnClickListener(v->{
+            Intent intent1=new Intent(GroupChatActivity.this,GroupDetailsActivity.class);
+            intent1.putExtra("Group_name",groupName);
+            intent1.putExtra("chatId",chatId);
+            startActivity(intent1);
+        });
 
+        // Fetch previous messages for the group
         messageView= findViewById(R.id.messageListView);
         messageTextList = new ArrayList<>();
         aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
         messageView.setAdapter(aa);
         fetchMessages(chatId,null);
     }
-
-
-
-
-
     // Method to fetch previous messages for the group chat
     public void fetchMessages(String chatId, String receiverId) {
         Log.d("fetchMessages","Working");

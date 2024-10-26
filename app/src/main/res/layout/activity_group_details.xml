@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="0dp">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:fontFamily="@font/inika"
+        android:background="@color/navy_blue"
+        android:elevation="4dp"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
+        app:title="Full Name"
+        app:titleTextColor="#FFFFFF"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header (Toolbar) -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/navy_blue">
 
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_arrow_back_ios_new_24"
-                android:layout_marginLeft="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back Button" />
-
-            <TextView
-                android:id="@+id/group_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/inika"
-                android:textSize="20sp"
-                android:text="Group Name" />
-        </androidx.appcompat.widget.Toolbar>
 
         <!-- Group Info Section -->
         <ImageView
@@ -61,12 +51,12 @@
             android:layout_marginBottom="16dp" />
 
         <!-- Description -->
-        <EditText
+        <TextView
             android:id="@+id/tv_group_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Group Description"
-            android:inputType="textMultiLine"
+            android:layout_marginLeft="10dp"
+            android:text="Hi Everyone! Welcome to our group."
             android:maxLines="6"
             android:background="@android:color/white"
             android:textColor="@android:color/black"
@@ -152,4 +142,4 @@
             <!-- Add more members as needed -->
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

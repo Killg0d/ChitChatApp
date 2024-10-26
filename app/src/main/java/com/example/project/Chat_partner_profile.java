@@ -15,8 +15,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.project.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Chat_partner_profile extends AppCompatActivity {
 
@@ -29,11 +38,11 @@ public class Chat_partner_profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_partner_profile);
-
-       getUser(getIntent().getStringExtra("receiverId"));
+        String receiverId = getIntent().getStringExtra("receiverId");
+        getUser(receiverId);
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getSupportActionBar().setTitle("Full Name");
 
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -53,6 +62,35 @@ public class Chat_partner_profile extends AppCompatActivity {
 
         TextView groupTwoText = findViewById(R.id.groupTwoText);
         groupTwoText.setText("Family");
+        FirebaseFirestore.getInstance().collection("chats")
+                .whereArrayContains("participants", Arrays.asList(userId, receiverId))
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.d("ChatData", "Error loading chats", e);
+                        return;
+                    }
+                    if (snapshots != null) {
+                        int counter = 0;// Counter for tracking document processing
+
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            boolean isGroup = document.getBoolean("isGroup");
+                            Log.d("GroupCheck", "Document isGroup: " + isGroup);
+                            if (!isGroup) {
+
+                            } else {
+                                if (counter == 0) {
+                                    groupOneText.setText(document.getString("groupName"));
+                                } else if (counter == 1) {
+                                    groupTwoText.setText(document.getString("groupName"));
+                                }
+                                counter++;
+
+                            }
+                        }
+                    }
+                    else
+                        Log.d("ChatData", "No such document");
+                });
     }
 
     private void getUser(String receiverId) {
