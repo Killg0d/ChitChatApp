@@ -42,10 +42,16 @@ public class MessageTextAdapter extends ArrayAdapter<Message> {
             convertView = LayoutInflater.from(context).inflate(R.layout.activity_message_text, parent, false);
         }
 
+        // UI Elements for both user and recipient messages
+        LinearLayout llCurrentUser = convertView.findViewById(R.id.linearText);
         TextView nameTextView = convertView.findViewById(R.id.nameTextView);
         TextView messageTextView = convertView.findViewById(R.id.myText);
         TextView sentAtTextView = convertView.findViewById(R.id.sentAtTextView);
-        LinearLayout ll = convertView.findViewById(R.id.linearText); // Message container
+
+        LinearLayout llOtherUser = convertView.findViewById(R.id.linearText2);
+        TextView nameTextView2 = convertView.findViewById(R.id.nameTextView2);
+        TextView messageTextView2 = convertView.findViewById(R.id.myText2);
+        TextView sentAtTextView2 = convertView.findViewById(R.id.sentAtTextView2);
 
         String senderId = messageText.getSenderId();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -57,6 +63,7 @@ public class MessageTextAdapter extends ArrayAdapter<Message> {
                         User user = documentSnapshot.toObject(User.class);
                         if (user != null) {
                             nameTextView.setText(user.getFullName());
+                            nameTextView2.setText(user.getFullName());
                         }
                     }
                 })
@@ -64,26 +71,27 @@ public class MessageTextAdapter extends ArrayAdapter<Message> {
 
         // Set message content and timestamp
         messageTextView.setText(messageText.getMessage());
+        messageTextView2.setText(messageText.getMessage());
         Timestamp timestamp = messageText.getTimestamp();
         if (timestamp != null) {
             Date date = timestamp.toDate();
             sentAtTextView.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date));
+            sentAtTextView2.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date));
         } else {
             sentAtTextView.setText("Unknown Time");
+            sentAtTextView2.setText("Unknown Time");
         }
 
-        messageTextView.setGravity(Gravity.START);
         if (senderId.equals(currentUserId)) {
             // For the current user's messages
+            llCurrentUser.setVisibility(View.VISIBLE);
+            llOtherUser.setVisibility(View.GONE);
 
-            ll.setBackgroundResource(R.drawable.text_view_message_background_1); // Set current user background
-             // Align text to the right
-            messageTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         } else {
             // For other users' messages
+            llCurrentUser.setVisibility(View.GONE);
+            llOtherUser.setVisibility(View.VISIBLE);
 
-            ll.setBackgroundResource(R.drawable.text_view_message_background); // Set other user's background
-            messageTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         }
 
         return convertView;
