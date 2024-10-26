@@ -6,6 +6,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 
 
 public class ChatsSettings extends BaseActivity {
@@ -41,7 +42,11 @@ public class ChatsSettings extends BaseActivity {
 
         theme = findViewById(R.id.theme);
         theme.setOnCheckedChangeListener((radioGroup, i) -> {
-
+            if (i == R.id.light) {
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            } else {
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
         });
         font = findViewById(R.id.font);
         font.setOnCheckedChangeListener((fontGroup,checkedId)->{

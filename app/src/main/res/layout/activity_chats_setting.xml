@@ -37,13 +37,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             <RadioButton
-                android:id="@id/light"
+                android:id="@+id/light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Light"
                 android:checked="true"/>
             <RadioButton
-                android:id="@id/dark"
+                android:id="@+id/dark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dark"/>

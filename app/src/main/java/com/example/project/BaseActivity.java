@@ -1,8 +1,11 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +90,22 @@ public class BaseActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         recreate();
+    }
+    // Method to start the service
+    public void startNotificationService() {
+        Log.d("startNotificationService","startNotificationService");
+        Intent serviceIntent = new Intent(this, FirebaseChatListenerService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+    }
+
+    // Method to stop the service
+    public void stopNotificationService() {
+        Intent serviceIntent = new Intent(this, FirebaseChatListenerService.class);
+        stopService(serviceIntent); // Stops the service
     }
 
 }
