@@ -7,19 +7,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GroupChatActivity extends AppCompatActivity {
@@ -33,7 +40,10 @@ public class GroupChatActivity extends AppCompatActivity {
     private ScrollView scrollView;
 
     private String chatId;               // Unique group ID for each group conversation
-    private String groupName;             // Group name for display
+    private String groupName;
+    ListView messageView;
+    List<Message> messageTextList;
+    MessageTextAdapter aa;// Group name for display
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +87,18 @@ public class GroupChatActivity extends AppCompatActivity {
             String message = messageInput.getText().toString();
             if (!message.isEmpty()) {
                 new ChatManager().sendMessage(chatId,FirebaseAuth.getInstance().getCurrentUser().getUid(),message);
-                fetchMessages(chatId);
+                fetchMessages(chatId,null);
                 messageInput.setText(""); // Clear input field after sending
             }
         });
 
         // Fetch previous messages for the group
-        fetchMessages(chatId);
+
+        messageView= findViewById(R.id.messageListView);
+        messageTextList = new ArrayList<>();
+        aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
+        messageView.setAdapter(aa);
+        fetchMessages(chatId,null);
     }
 
 
@@ -91,52 +106,47 @@ public class GroupChatActivity extends AppCompatActivity {
 
 
     // Method to fetch previous messages for the group chat
-    private void fetchMessages(String groupId) {
+    public void fetchMessages(String chatId, String receiverId) {
+        Log.d("fetchMessages","Working");
+        messageTextList.clear();
         firestore.collection("chats")
-                .document(groupId)
+                .document(chatId)
                 .collection("messages")
                 .orderBy("sentAt", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
+                    Log.w("Firestore", "Successful");
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String messageText = document.getString("message");
-                            addMessageToLayout(messageText); // Add each message to the UI
+                        Log.w("Firestore", "Successful2");
+                        if(task.getResult().isEmpty())
+                        {
+                            Log.d("No messages foumd","No messages found");
                         }
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Timestamp sentAtTimestamp = document.getTimestamp("sentAt");
+                            if (sentAtTimestamp != null) {
+                                Date sentAtDate = sentAtTimestamp.toDate();
+                                Log.d("sentAt", new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(sentAtDate));
+                            } else {
+                                Log.d("sentAt", "Timestamp is null");
+                            }
+                            Message message = new Message(document.getString("senderId"), document.getString("message"), sentAtTimestamp);
+                            Log.d("fetchmsg",message.toString());
+                            messageTextList.add(message);
+                            // Add each message to the UI
+                        }
+                        MessageTextAdapter aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
+                        messageView.setAdapter(aa);
+                        aa.notifyDataSetChanged();
                         // Scroll to the bottom of the ScrollView after loading all messages
-
+                        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
                     } else {
-                        Log.w("Firestore", "Error fetching messages", task.getException());
+                        Log.w("Firestore", "Error getting messages.", task.getException());
                     }
                 });
+
     }
 
-    // Method to dynamically add a message to the layout
-    private void addMessageToLayout(String messageText) {
-        // Create a new TextView for the message
-        TextView messageTextView = new TextView(this);
 
-        // Set the text of the TextView to the message
-        messageTextView.setText(messageText);
-
-        // Set layout parameters for the TextView
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(16, 8, 16, 8); // Optional: Add margins
-        messageTextView.setLayoutParams(params);
-
-        // Set style for the TextView (e.g., padding, background)
-        messageTextView.setPadding(16, 16, 16, 16);
-        messageTextView.setBackgroundResource(R.drawable.message_background); // Set background drawable
-        messageTextView.setTextColor(getResources().getColor(R.color.black)); // Set text color
-
-        // Add the new TextView to the messages layout
-        messagesLayout.addView(messageTextView);
-
-        // Scroll to the bottom of the ScrollView when a new message is added
-        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
-    }
 
 }

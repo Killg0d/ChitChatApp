@@ -116,7 +116,7 @@ public class personal_chat extends AppCompatActivity {
             Intent intent = new Intent(this, Chat_partner_profile.class);
             startActivity(intent);
         });
-        fetchMessages(chatId,receiverId);
+
         Log.d("chatId",chatId);
         Log.d("recieverId",receiverId);
         // Load the previous messages for this conversation
@@ -143,12 +143,14 @@ public class personal_chat extends AppCompatActivity {
         messageTextList = new ArrayList<>();
         aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
         messageView.setAdapter(aa);
+        fetchMessages(chatId,receiverId);
     }
 
 
 
     public void fetchMessages(String chatId, String receiverId) {
         Log.d("fetchMessages","Working");
+        messageTextList.clear();
         firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")
