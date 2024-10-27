@@ -54,7 +54,11 @@ public class CustomMessageAdapter extends ArrayAdapter<UserMessage> {
         TextView message = convertView.findViewById(R.id.message); // Using TextView for both layout types
 
         // Populate the data into the template view using the data object
-        name.setText(item.getName());
+        if ((item.getName() == null)) {
+            name.setText("DeletedUser");
+        } else {
+            name.setText(item.getName());
+        }
         message.setText(item.getMessage());
         String savedImageUrl = item.getProfilePictureURL();
         // Log the profile image URL
