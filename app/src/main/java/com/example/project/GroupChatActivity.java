@@ -106,49 +106,55 @@ public class GroupChatActivity extends AppCompatActivity {
     }
     // Method to fetch previous messages for the group chat
     public void fetchMessages(String chatId, String receiverId) {
-        Log.d("fetchMessages","Working");
+        Log.d("fetchMessages", "Working");
         messageTextList.clear();
+
         firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")
                 .orderBy("sentAt", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    Log.w("Firestore", "Successful");
-                    if (task.isSuccessful()) {
-                        Log.w("Firestore", "Successful2");
-                        if(task.getResult().isEmpty())
-                        {
-                            Log.d("No messages foumd","No messages found");
-                        }
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Timestamp sentAtTimestamp = document.getTimestamp("sentAt");
-                            if (sentAtTimestamp != null) {
-                                Date sentAtDate = sentAtTimestamp.toDate();
-                                Log.d("sentAt", new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(sentAtDate));
-                            } else {
-                                Log.d("sentAt", "Timestamp is null");
-                            }
-                            Message message = new Message(document.getString("senderId"), document.getString("message"), sentAtTimestamp);
-                            Log.d("fetchmsg",message.toString());
-                            messageTextList.add(message);
-                            // Add each message to the UI
-                        }
-                        MessageTextAdapter aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
-                        messageView.setAdapter(aa);
-                        aa.notifyDataSetChanged();
-                        // Scroll to the bottom of the ScrollView after loading all messages
-                        messageView.post(() -> {
-                            // Select the last row so it will scroll into view...
-                            messageView.setSelection(aa.getCount() - 1);
-                        });
-
-                    } else {
-                        Log.w("Firestore", "Error getting messages.", task.getException());
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.w("Firestore", "Error listening for messages.", e);
+                        return;
                     }
-                });
 
+                    // Clear the previous messages
+                    messageTextList.clear();
+
+                    // Check if there are any documents in the snapshot
+                    if (snapshots != null && !snapshots.isEmpty()) {
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            Timestamp sentAtTimestamp = document.getTimestamp("sentAt");
+                            Date sentAtDate = sentAtTimestamp != null ? sentAtTimestamp.toDate() : null;
+
+
+                            Message message = new Message(
+                                    document.getString("senderId"),
+                                    document.getString("message"),
+                                    sentAtTimestamp
+                            );
+                            Log.d("fetchmsg", message.toString());
+                            messageTextList.add(message);
+                        }
+                    } else {
+                        Log.d("No messages found", "No messages found");
+                    }
+
+                    // Update the adapter and scroll to the bottom
+                    MessageTextAdapter aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
+                    messageView.setAdapter(aa);
+                    aa.notifyDataSetChanged();
+
+                    // Scroll to the bottom of the ListView after loading all messages
+                    messageView.post(() -> {
+                        if (aa.getCount() > 0) {
+                            messageView.setSelection(aa.getCount() - 1);
+                        }
+                    });
+                });
     }
+
 
 
 

@@ -144,6 +144,7 @@ public class personal_chat extends AppCompatActivity {
         messageTextList = new ArrayList<>();
         aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
         messageView.setAdapter(aa);
+        fetchMessages(chatId,receiverId);
     }
 
 
