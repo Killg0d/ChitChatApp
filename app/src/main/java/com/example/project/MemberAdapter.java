@@ -33,8 +33,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         holder.statusTextView.setText(member.getDescription());
 
         // Here you would load the profile image with an image loading library if necessary
-        // Example using a placeholder:
         holder.profileImageView.setImageResource(R.drawable.ic_person);
+
+        // Set the checkbox state based on the user's selection state
+        holder.checkBox.setChecked(member.isSelected()); // Set the checkbox to reflect the user's selection
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             member.setSelected(isChecked); // Set selection status if needed

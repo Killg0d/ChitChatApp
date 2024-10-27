@@ -109,6 +109,9 @@ public class GroupActivity extends AppCompatActivity {
                         // Map Firestore document to User object
                         User user = document.toObject(User.class);
                         if (user != null) {
+                            if (user.getUserId().equals(userId)) { // userId should be the ID of the current user
+                                user.setSelected(true); // Keep the current user selected
+                            }
                             memberList.add(user); // Add User to member list
                             Log.d("User:", user.toString()); // Log user details for debugging
                         }
