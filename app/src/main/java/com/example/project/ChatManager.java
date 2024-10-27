@@ -37,7 +37,7 @@ public class ChatManager {
 
         firestore.collection("chats")
                 .document(chatId)
-                .set(chatData)
+                .set(chatData) //Overwrite existing chat if found or create a new chat
                 .addOnSuccessListener(aVoid -> {
                     // Chat created successfully
                     Log.d("ChatManager", "Chat created with ID: " + chatId);

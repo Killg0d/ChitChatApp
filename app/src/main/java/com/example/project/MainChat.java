@@ -121,6 +121,7 @@ public class MainChat extends BaseActivity {
                 .whereArrayContains("participants", userId)
                 .orderBy("lastMessageTime", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshots, e) -> {
+                    //Keeps looking for data in database
                     messageList.clear();
                     if (e != null) {
                         Log.d("ChatData", "Error loading chats", e);

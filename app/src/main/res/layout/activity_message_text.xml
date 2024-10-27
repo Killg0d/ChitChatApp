@@ -14,7 +14,6 @@
         android:id="@+id/linearText"
         android:orientation="vertical"
         android:background="@drawable/text_view_message_background_1"
-
         >
     <TextView
         android:id="@+id/nameTextView"

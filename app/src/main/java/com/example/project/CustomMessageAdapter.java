@@ -67,7 +67,6 @@ public class CustomMessageAdapter extends ArrayAdapter<UserMessage> {
                     .load(savedImageUrl)
                     .placeholder(R.drawable.download)  // Show a default placeholder while loading
                     .error(R.drawable.person)          // Show default image in case of error
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache strategy to avoid flickering
                     .into(profilePicture);
         } else {
             // If URL is null or empty, set a default image

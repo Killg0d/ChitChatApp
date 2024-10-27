@@ -1,9 +1,12 @@
 package com.example.project;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,12 +55,13 @@ public class personal_chat extends AppCompatActivity {
     ListView messageView;
     List<Message> messageTextList;
     MessageTextAdapter aa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_chat);
 
-        firestore= FirebaseFirestore.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         chatId = getIntent().getStringExtra("chatId"); // Get the chat ID from the intent
         // Retrieve the passed data from MainChat activity
         chatName = getIntent().getStringExtra("chatName");
@@ -88,7 +92,6 @@ public class personal_chat extends AppCompatActivity {
                 });
 
 
-
         // Initialize the views
         chatNameTextView = findViewById(R.id.chat_name);
         profileImageView = findViewById(R.id.profile_image);
@@ -99,9 +102,7 @@ public class personal_chat extends AppCompatActivity {
                     .placeholder(R.drawable.person) // Placeholder while loading
                     .error(R.drawable.person) // Error image if loading fails
                     .into(profileImageView);
-        }
-        else
-        {
+        } else {
             profileImageView.setImageResource(R.drawable.person);
         }
         sendbutton = findViewById(R.id.send_button);
@@ -114,12 +115,12 @@ public class personal_chat extends AppCompatActivity {
         clicktoname = findViewById(R.id.clicktoname);
         clicktoname.setOnClickListener(v -> {
             Intent intent = new Intent(this, Chat_partner_profile.class);
-            intent.putExtra("receiverId",receiverId);
+            intent.putExtra("receiverId", receiverId);
             startActivity(intent);
         });
 
-        Log.d("chatId",chatId);
-        Log.d("recieverId",receiverId);
+        Log.d("chatId", chatId);
+        Log.d("recieverId", receiverId);
         // Load the previous messages for this conversation
 //        loadMessages(chatId); // Load messages using the unique chat ID
         String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -140,13 +141,12 @@ public class personal_chat extends AppCompatActivity {
             onBackPressed();
             finish();
         });
-        messageView= findViewById(R.id.messageListView);
+        messageView = findViewById(R.id.messageListView);
         messageTextList = new ArrayList<>();
         aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
         messageView.setAdapter(aa);
-        fetchMessages(chatId,receiverId);
+        fetchMessages(chatId, receiverId);
     }
-
 
 
     public void fetchMessages(String chatId, String receiverId) {
