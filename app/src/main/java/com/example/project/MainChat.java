@@ -162,6 +162,7 @@ public class MainChat extends BaseActivity {
                                 // Insert the new message at the correct position
                                 insertMessageInOrder(newMessage);
                                 counter[0]++;
+                                messageAdapter.notifyDataSetChanged();
                             }
                         }
                     }

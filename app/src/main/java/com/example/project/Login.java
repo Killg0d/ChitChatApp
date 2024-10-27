@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,6 +30,25 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        SharedPreferences preferences = getSharedPreferences("Login", MODE_PRIVATE);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            // User is logged in with Firebase
+            Log.d("FirebaseAuth", "User is authenticated: " + currentUser.getUid());
+
+            // Ensure shared preference reflects the login state
+            preferences.edit().putBoolean("isLogin?", true).apply();
+
+            // Start the main chat activity if the user is logged in
+            Intent intent = new Intent(Login.this, MainChat.class);
+            startActivity(intent);
+            finish(); // Close the Login activity
+        } else {
+            Log.d("FirebaseAuth", "User is not authenticated");
+            // Set shared preference as not logged in
+            preferences.edit().putBoolean("isLogin?", false).apply();
+        }
         p= getSharedPreferences("Login",MODE_PRIVATE);
         if(p.getBoolean("isLogin?",false))
         {
@@ -85,7 +105,6 @@ public class Login extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
-                        p.edit().putBoolean("isLogin?",true).commit();
                         // Navigate to main chat screen
                         Intent intent = new Intent(Login.this, MainChat.class);
                         startActivity(intent);
