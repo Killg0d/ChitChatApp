@@ -1,9 +1,12 @@
 package com.example.project;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +38,11 @@ public class Chat_partner_profile extends AppCompatActivity {
     TextView emailAddress;
     TextView statusMessage;
     ImageView profileurl;
+    ListView listView;
+    CustomMessageAdapter messageAdapter;
+    List<UserMessage> messageList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,41 +65,7 @@ public class Chat_partner_profile extends AppCompatActivity {
         profileurl= findViewById(R.id.profilePicture);
         statusMessage = findViewById(R.id.statusMessage);
         statusMessage.setText("Hey! I am using ChitChat.");
-
-        TextView groupOneText = findViewById(R.id.groupOneText);
-        groupOneText.setText("grp");
-
-        TextView groupTwoText = findViewById(R.id.groupTwoText);
-        groupTwoText.setText("family");
-        FirebaseFirestore.getInstance().collection("chats")
-                .whereArrayContains("participants", Arrays.asList(userId, receiverId))
-                .addSnapshotListener((snapshots, e) -> {
-                    if (e != null) {
-                        Log.d("ChatData", "Error loading chats", e);
-                        return;
-                    }
-                    if (snapshots != null) {
-                        int counter = 0;// Counter for tracking document processing
-
-                        for (QueryDocumentSnapshot document : snapshots) {
-                            boolean isGroup = document.getBoolean("isGroup");
-                            Log.d("GroupCheck", "Document isGroup: " + isGroup);
-                            if (!isGroup) {
-
-                            } else {
-                                if (counter == 0) {
-                                    groupOneText.setText(document.getString("groupName"));
-                                } else if (counter == 1) {
-                                    groupTwoText.setText(document.getString("groupName"));
-                                }
-                                counter++;
-
-                            }
-                        }
-                    }
-                    else
-                        Log.d("ChatData", "No such document");
-                });
+        getGroupsInCommon(userId,receiverId);
     }
 
     private void getUser(String receiverId) {
@@ -122,4 +97,50 @@ public class Chat_partner_profile extends AppCompatActivity {
                         }
                 );
     }
+    private void getGroupsInCommon(String userId, String receiverId) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        List<String> commonGroups = new ArrayList<>();
+
+        Log.d("Chat_partner_profile", "Fetching common groups for userId: " + userId + " and receiverId: " + receiverId);
+
+        firestore.collection("chats")
+                .whereArrayContains("participants", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("Chat_partner_profile", "Query successful, documents found: " + queryDocumentSnapshots.size());
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        List<String> participants = (List<String>) document.get("participants");
+                        if (participants != null && participants.contains(receiverId)) {
+                            String groupName = document.getString("groupName");
+                            commonGroups.add(groupName);
+                            Log.d("Chat_partner_profile", "Common group found: " + groupName);
+                        } else {
+                            Log.d("Chat_partner_profile", "No common group in document: " + document.getId());
+                        }
+                    }
+
+                    Log.d("Chat_partner_profile", "Total common groups found: " + commonGroups.size());
+                    displayCommonGroups(commonGroups);
+                })
+                .addOnFailureListener(e -> Log.e("Chat_partner_profile", "Error fetching common groups", e));
+    }
+
+    private void displayCommonGroups(List<String> commonGroups) {
+        LinearLayout groupOneLayout = findViewById(R.id.groupOneLayout);
+        groupOneLayout.removeAllViews();
+
+        for (String group : commonGroups) {
+            TextView groupTextView = new TextView(this);
+            groupTextView.setText(group);
+            groupTextView.setTextSize(16);
+            groupTextView.setTextColor(Color.BLACK);
+            groupOneLayout.addView(groupTextView);
+
+            Log.d("Chat_partner_profile", "Displaying group: " + group);
+        }
+
+        Log.d("Chat_partner_profile", "Displayed " + commonGroups.size() + " common groups.");
+    }
+
 }

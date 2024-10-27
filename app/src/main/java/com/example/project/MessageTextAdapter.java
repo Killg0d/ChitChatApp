@@ -72,15 +72,14 @@ public class MessageTextAdapter extends ArrayAdapter<Message> {
         // Set message content and timestamp
         messageTextView.setText(messageText.getMessage());
         messageTextView2.setText(messageText.getMessage());
+
         Timestamp timestamp = messageText.getTimestamp();
-        if (timestamp != null) {
-            Date date = timestamp.toDate();
-            sentAtTextView.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date));
-            sentAtTextView2.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date));
-        } else {
-            sentAtTextView.setText("Unknown Time");
-            sentAtTextView2.setText("Unknown Time");
-        }
+        String formattedDate = (timestamp != null)
+                ? new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(timestamp.toDate())
+                : "Unknown Time";
+
+        sentAtTextView.setText(formattedDate);
+        sentAtTextView2.setText(formattedDate);
 
         if (senderId.equals(currentUserId)) {
             // For the current user's messages

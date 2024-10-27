@@ -7,6 +7,7 @@
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="0dp">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
@@ -16,135 +17,55 @@
         android:elevation="4dp"
         app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
         app:title="Full Name"
-        app:titleTextColor="#FFFFFF"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        app:titleTextColor="#FFFFFF" />
 
-    <LinearLayout
+    <!-- Group Info Section -->
+    <ImageView
+        android:id="@+id/group_avatar"
+        android:layout_width="120dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Group Avatar"
+        android:padding="17dp"
+        android:src="@drawable/grp" />
+
+    <TextView
+        android:id="@+id/tv_members_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Members"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tv_group_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginLeft="10dp"
+        android:text="Hi Everyone! Welcome to our group."
+        android:maxLines="6"
+        android:background="@android:color/white"
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/darker_gray" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Participants"
+        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
 
-
-        <!-- Group Info Section -->
-        <ImageView
-            android:id="@+id/group_avatar"
-            android:layout_width="120dp"
-            android:layout_height="128dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="Group Avatar"
-            android:padding="17dp"
-            android:src="@drawable/grp" />
-
-
-
-        <TextView
-            android:id="@+id/tv_members_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Members"
-            android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Description -->
-        <TextView
-            android:id="@+id/tv_group_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Hi Everyone! Welcome to our group."
-            android:maxLines="6"
-            android:background="@android:color/white"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
-
-        <!-- Members List -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp">
-
-            <!-- Member 1 with ProfileSetting Picture -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_person"
-                    android:contentDescription="Member 1 Profile"
-                    android:layout_marginEnd="16dp"/>
-
-                <TextView
-                    android:id="@+id/member1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="madhuri"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Member 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_person"
-                    android:contentDescription="Member 2 Profile"
-                    android:layout_marginEnd="16dp"/>
-
-                <TextView
-                    android:id="@+id/member2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="gaurag"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <!-- Member 3 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_person"
-                    android:contentDescription="Member 3 Profile"
-                    android:layout_marginEnd="16dp"/>
-
-                <TextView
-                    android:id="@+id/member3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="test"
-                    android:textColor="@color/black"
-
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <!-- Add more members as needed -->
-        </LinearLayout>
-    </LinearLayout>
+    <!-- ListView for Participants -->
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
 </LinearLayout>

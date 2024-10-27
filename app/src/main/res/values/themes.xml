@@ -27,7 +27,7 @@
     <style name="MessageTextViewStyle">
         <item name="android:background">@drawable/text_view_message_background</item>
         <item name="android:textColor">@android:color/white</item> <!-- Text color -->
-       <!-- Text size -->
+        <!-- Text size -->
         <item name="android:padding">10dp</item>
         <item name="android:layout_margin">10dp</item><!-- Padding -->
         <!-- Text alignment -->

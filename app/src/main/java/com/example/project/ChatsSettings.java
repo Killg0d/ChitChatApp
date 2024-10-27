@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,13 +45,30 @@ public class ChatsSettings extends BaseActivity {
         RadioButton smallRadioButton = findViewById(R.id.small);
         RadioButton mediumRadioButton = findViewById(R.id.medium);
         RadioButton largeRadioButton = findViewById(R.id.large);
+        // Initialize theme radio group and check current mode
         theme = findViewById(R.id.theme);
+        int currentNightMode = AppCompatDelegate.getDefaultNightMode();
+        if (currentNightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            theme.check(R.id.dark); // Set dark mode as selected if it’s currently active
+        } else {
+            theme.check(R.id.light); // Set light mode as selected otherwise
+        }
+
+// Set listener for dark mode switch
         theme.setOnCheckedChangeListener((radioGroup, i) -> {
             if (i == R.id.light) {
-                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            } else {
-                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            } else if (i == R.id.dark) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
+
+            // Recreate activity to apply the mode change
+            recreate();
+
+            // Redirect to ClassList activity after theme change
+            Intent intent = new Intent(ChatsSettings.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
         // Set the selected font size based on saved preferences
         if (fontSize == 18f) {

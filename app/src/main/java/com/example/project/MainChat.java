@@ -114,12 +114,14 @@ public class MainChat extends BaseActivity {
         // Clean up handler
     }
     private void loadChatData() {
+        messageList.clear();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseFirestore.getInstance().collection("chats")
                 .whereArrayContains("participants", userId)
                 .orderBy("lastMessageTime", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshots, e) -> {
+                    messageList.clear();
                     if (e != null) {
                         Log.d("ChatData", "Error loading chats", e);
                         return;

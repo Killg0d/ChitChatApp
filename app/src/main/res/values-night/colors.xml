@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy_blue">#070D46</color>
+    <color name="white">#FFFFFF</color>
+    <color name="lighter_gray">#2C2C2C</color>
+    <color name="black">#000000</color>
+    <color name="my_light_primary">#121212</color> <!-- Darker primary for night -->
+    <color name="transparent">#00000000</color>
+    <color name="my_light_secondary">#1E1E1E</color> <!-- Dark secondary for night -->
+    <color name="grey">#969696</color>
+    <color name="my_light_blue">#374957</color> <!-- Muted blue for night -->
+
+    <!-- Additional colors for consistency -->
+    <color name="colorSecondary">#1E1E1E</color> <!-- Dark secondary color for night -->
+</resources>

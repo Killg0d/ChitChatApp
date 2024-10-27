@@ -144,52 +144,50 @@ public class personal_chat extends AppCompatActivity {
         messageTextList = new ArrayList<>();
         aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
         messageView.setAdapter(aa);
-        fetchMessages(chatId,receiverId);
     }
 
 
 
     public void fetchMessages(String chatId, String receiverId) {
-        Log.d("fetchMessages","Working");
+        Log.d("fetchMessages", "Setting up real-time listener");
         messageTextList.clear();
+
         firestore.collection("chats")
                 .document(chatId)
                 .collection("messages")
                 .orderBy("sentAt", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    Log.w("Firestore", "Successful");
-                    if (task.isSuccessful()) {
-                        Log.w("Firestore", "Successful2");
-                        if(task.getResult().isEmpty())
-                        {
-                            Log.d("No messages foumd","No messages found");
-                        }
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null) {
+                        Log.w("Firestore", "Listen failed.", e);
+                        return;
+                    }
+
+                    if (querySnapshot != null) {
+                        Log.d("Firestore", "Messages fetched in real-time.");
+                        messageTextList.clear(); // Clear the list to avoid duplicates
+
+                        for (QueryDocumentSnapshot document : querySnapshot) {
                             Timestamp sentAtTimestamp = document.getTimestamp("sentAt");
-                            if (sentAtTimestamp != null) {
-                                Date sentAtDate = sentAtTimestamp.toDate();
-                                Log.d("sentAt", new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(sentAtDate));
-                            } else {
-                                Log.d("sentAt", "Timestamp is null");
-                            }
-                            Message message = new Message(document.getString("senderId"), document.getString("message"), sentAtTimestamp);
-                            Log.d("fetchmsg",message.toString());
-                            messageTextList.add(message);
-                           // Add each message to the UI
+                            Date sentAtDate = sentAtTimestamp != null ? sentAtTimestamp.toDate() : null;
+
+                            Message message = new Message(
+                                    document.getString("senderId"),
+                                    document.getString("message"),
+                                    sentAtTimestamp
+                            );
+
+                            Log.d("fetchmsg", message.toString());
+                            messageTextList.add(message); // Add each message to the UI
                         }
-                        MessageTextAdapter aa = new MessageTextAdapter(this.getApplicationContext(), messageTextList);
-                        messageView.setAdapter(aa);
+
+                        // Notify adapter of data change
                         aa.notifyDataSetChanged();
-                        // Scroll to the bottom of the ScrollView after loading all messages
-                        messageView.post(() -> {
-                            // Select the last row so it will scroll into view...
-                            messageView.setSelection(aa.getCount() - 1);
-                        });
+
+                        // Scroll to the bottom of the ListView to show the latest message
+                        messageView.post(() -> messageView.setSelection(aa.getCount() - 1));
                     } else {
-                        Log.w("Firestore", "Error getting messages.", task.getException());
+                        Log.d("Firestore", "Current data: null");
                     }
                 });
-
     }
 }

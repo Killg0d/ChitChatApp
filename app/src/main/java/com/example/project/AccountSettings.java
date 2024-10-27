@@ -1,7 +1,12 @@
 package com.example.project;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -9,8 +14,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 
@@ -58,7 +73,53 @@ public class AccountSettings extends BaseActivity {
                 newEmailInput.setHint("Enter new email");
                 // Confirm button Listner
                 confirm.setOnClickListener(view1 -> {
-                    dialog.dismiss();
+                    String oldEmail = oldEmailInput.getText().toString().trim();
+                    String newEmail = newEmailInput.getText().toString().trim();
+
+                    // Validate the inputs
+                    if (oldEmail.isEmpty() || newEmail.isEmpty()) {
+                        Toast.makeText(AccountSettings.this, "Both fields must be filled.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    // Check if the old email matches the current user's email
+                    if (user != null && user.getEmail() != null && user.getEmail().equals(oldEmail)) {
+                        // Proceed to update email
+                        user.updateEmail(newEmail)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        // Get the current user's UID
+                                        String userId = user.getUid();
+                                        Log.d(TAG,userId);
+                                        // Update the email in Firestore
+                                        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                                        firestore.collection("users").document(userId)
+                                                .update("email", newEmail)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Log.d(TAG, "User email in Firestore updated successfully.");
+                                                    Toast.makeText(AccountSettings.this, "Email updated successfully.", Toast.LENGTH_SHORT).show();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e(TAG, "Failed to update email in Firestore: " + e.getMessage());
+                                                    Toast.makeText(AccountSettings.this, "Email updated in Firebase but failed in Firestore. Try again.", Toast.LENGTH_SHORT).show();
+                                                });
+
+
+                                        Log.d(TAG, "User email address updated.");
+
+                                        Toast.makeText(AccountSettings.this, "Email updated successfully.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.e(TAG, "Failed to update email: " + task.getException().getMessage());
+                                        Toast.makeText(AccountSettings.this, "Failed to update email. Try again.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else {
+                        Toast.makeText(AccountSettings.this, "Old email does not match.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    dialog.dismiss();  // Close the dialog after processing
                 });
 
                 // Show the dialog
@@ -90,6 +151,10 @@ public class AccountSettings extends BaseActivity {
                 closeButton.setOnClickListener(v -> {
                     dialog.dismiss();  // Close the dialog
                 });
+                confirm.setOnClickListener(view1 -> {
+
+                    dialog.dismiss();
+                });
                 String oldEmail = oldPasswordInput.getText().toString();
                 String newEmail = newPasswordInput.getText().toString();
 
@@ -98,29 +163,91 @@ public class AccountSettings extends BaseActivity {
             }
             else if(item.getName().equals("Delete Account"))
             {
-                Toast.makeText(AccountSettings.this, "Working", Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(AccountSettings.this);
                 builder.setTitle("Delete Account");
                 builder.setMessage("Are you sure you want to delete the account?");
                 builder.setPositiveButton("Yes", (dialogInterface, i1) -> {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+                    assert user != null;
+                    String userId = user.getUid(); // Get the user ID
+
+                    // Delete user data from Firestore
+                    deleteUserData(userId, new DeleteUserDataCallback() {
+                        @Override
+                        public void onSuccess() {
+                            // If deletion is successful, proceed to delete the user from FirebaseAuth
+                            user.delete()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "User account deleted.");
+                                                Toast.makeText(AccountSettings.this, "Account deleted successfully.", Toast.LENGTH_SHORT).show();
+                                                // Update shared preferences and sign out
+                                                SharedPreferences p = getSharedPreferences("Login", MODE_PRIVATE);
+                                                p.edit().putBoolean("isLogin?", false).commit();
+                                                FirebaseAuth.getInstance().signOut();
+                                                startActivity(new Intent(AccountSettings.this, Login.class));
+                                                finish();
+                                            } else {
+                                                Log.e(TAG, "Error deleting user account", task.getException());
+                                                Toast.makeText(AccountSettings.this, "Error deleting account.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            // If deletion fails, show an error message
+                            Toast.makeText(AccountSettings.this, "Failed to delete user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "Failed to delete user data", e);
+                        }
+                    });
                 });
-                builder.setNegativeButton("Cancel", (dialogInterface, i12) -> dialogInterface.dismiss());
-                AlertDialog dialog = builder.create();
-
-// Modify the button colors when the dialog is shown
-                dialog.setOnShowListener(dialogInterface -> {
-                    // Get the buttons
-                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-                    // Set custom colors for the buttons
-                    positiveButton.setTextColor(getResources().getColor(android.R.color.holo_red_light)); // Red color for "Yes"
-                    negativeButton.setTextColor(getResources().getColor(android.R.color.holo_blue_light)); // Blue color for "Cancel"
-                });
-
-                dialog.show();
+                builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                builder.show();
             }
         });
     }
+    public interface DeleteUserDataCallback {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+    private void deleteUserData(String userId, DeleteUserDataCallback callback) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        WriteBatch batch = firestore.batch(); // Create a batch for writing
+
+        // 1. Delete the user document from the users collection
+        DocumentReference userRef = firestore.collection("users").document(userId);
+        batch.delete(userRef);
+
+        // 2. Delete all chats where the user is a participant
+        firestore.collection("chats")
+                .whereArrayContains("participants", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            DocumentReference chatRef = document.getReference();
+                            batch.delete(chatRef); // Add to batch for deletion
+                        }
+                        // 3. Commit the batch after adding all deletions
+                        batch.commit().addOnCompleteListener(commitTask -> {
+                            if (commitTask.isSuccessful()) {
+                                Log.d(TAG, "Successfully deleted user data and chats.");
+                                callback.onSuccess(); // Notify success
+                            } else {
+                                Log.e(TAG, "Error committing batch delete", commitTask.getException());
+                                callback.onFailure(commitTask.getException()); // Notify failure
+                            }
+                        });
+                    } else {
+                        Log.e(TAG, "Error getting chats", task.getException());
+                        callback.onFailure(task.getException()); // Notify failure
+                    }
+                });
+    }
+
 }

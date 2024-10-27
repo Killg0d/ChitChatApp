@@ -1,128 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#F5F5F5"
     tools:context=".Chat_partner_profile">
 
-
-
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:fontFamily="@font/inika"
         android:background="@color/navy_blue"
         android:elevation="4dp"
+        android:fontFamily="@font/inika"
         app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
         app:title="Full Name"
-        app:titleTextColor="#FFFFFF"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        app:titleTextColor="#FFFFFF" />
 
+    <!-- Profile Picture -->
     <ImageView
         android:id="@+id/profilePicture"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:src="@drawable/ic_profile_placeholder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar" />
+        android:src="@drawable/ic_profile_placeholder" />
 
+    <!-- Email Address -->
     <TextView
         android:id="@+id/emailAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
         android:text="Email Address"
         android:textColor="#000000"
-        android:textSize="20dp"
-        android:fontFamily="@font/inika_bold"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/profilePicture"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="20sp"
+        android:fontFamily="@font/inika_bold" />
 
+    <!-- Status Message -->
     <TextView
         android:id="@+id/statusMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
         android:text="Hey! I am using ChitChat."
         android:textColor="#000000"
-        android:textSize="16dp"
-        android:fontFamily="@font/inika"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/emailAddress"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="24dp" />
+        android:textSize="16sp"
+        android:fontFamily="@font/inika" />
 
+    <!-- Groups in Common Label -->
     <TextView
         android:id="@+id/groupsInCommonLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="2 Groups in common"
+        android:layout_marginStart="24dp"
+        android:text="Groups in common"
         android:textColor="#000000"
         android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/statusMessage"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="24dp" />
+        android:textStyle="bold" />
 
+    <!-- Group Layout -->
+    <!-- Group Layout -->
     <LinearLayout
         android:id="@+id/groupOneLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/groupsInCommonLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="24dp">
-
-        <ImageView
-            android:id="@+id/groupOneIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_group"
-            android:contentDescription="Group One Icon" />
-
-        <TextView
-            android:id="@+id/groupOneText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Group One"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp">
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/groupTwoLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/groupOneLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="24dp">
-
-        <ImageView
-            android:id="@+id/groupTwoIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_group"
-            android:contentDescription="Group Two Icon" />
-
-        <TextView
-            android:id="@+id/groupTwoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Group Two"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
